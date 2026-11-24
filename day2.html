@@ -1,0 +1,1172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 2 · Luna — Orbit Ops: MLOps &amp; Production | AI Odyssey</title>
+<meta name="description" content="Day 2 of AI Odyssey: experiments, Model Registry, KFP v2 pipelines, online endpoints with canary rollouts, batch prediction, Feature Store, Model Monitoring and CI/CD with Cloud Build on Gemini Enterprise Agent Platform.">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css?v=2">
+</head>
+<body data-page="day2">
+
+<header class="hero day-hero">
+  <div class="hero-bg" style="background-image:url('assets/img/satellite.jpg')"></div>
+  <canvas class="starfield"></canvas>
+  <div class="hero-planet screen" style="background-image:url('assets/img/moon-full.jpg');background-size:contain;background-repeat:no-repeat;--pglow:rgba(76,201,240,.45)"></div>
+  <div class="wrap">
+    <div class="day-num" style="color:#4cc9f0">DAY 02 · WORLD: LUNA</div>
+    <h1>Orbit Ops: <span class="grad-text">MLOps &amp; Production</span></h1>
+    <p class="lead">Yesterday you built models. Today you put them in orbit: tracked, versioned, pipelined, served, monitored, and redeployed by a robot when the world shifts under them. Training a good model is the easy part. Keeping it good in production is the job.</p>
+    <div class="mission-strip">
+      <div><b>6</b><span>Labs</span></div>
+      <div><b>~6.5h</b><span>Keyboard time</span></div>
+      <div><b>860</b><span>XP available</span></div>
+      <div><b>🌊</b><span>Boss: Drift Leviathan</span></div>
+    </div>
+  </div>
+</header>
+
+<div class="day-layout">
+  <aside class="toc">
+    <h5>Day 2 flight path</h5>
+    <a href="#briefing">Mission briefing</a>
+    <a href="#schedule">Today's schedule</a>
+    <a href="#maturity">MLOps maturity levels</a>
+    <a href="#lab-2-1" class="sub">Lab 2.1 · Flight Recorder</a>
+    <a href="#anatomy">Anatomy of a pipeline</a>
+    <a href="#lab-2-2" class="sub">Lab 2.2 · Pipeline Forge</a>
+    <a href="#serving">Serving patterns</a>
+    <a href="#lab-2-3" class="sub">Lab 2.3 · Endpoint Launch</a>
+    <a href="#skew">Training–serving skew</a>
+    <a href="#lab-2-4" class="sub">Lab 2.4 · Feature Store</a>
+    <a href="#lab-2-5" class="sub">Lab 2.5 · Drift Radar</a>
+    <a href="#lab-2-6" class="sub">Lab 2.6 · Autopilot CI/CD</a>
+    <a href="#accel">Accelerators &amp; cost</a>
+    <a href="#boss">☠ Boss: Drift Leviathan</a>
+    <a href="#quiz">Debrief quiz</a>
+    <div class="toc-progress"><span class="faint" style="font-family:var(--font-mono);font-size:.72rem">DAY PROGRESS</span><div class="n" style="font-size:.82rem">0 / 0</div><div class="bar"><span></span></div></div>
+  </aside>
+
+  <main class="content">
+
+    <!-- BRIEFING -->
+    <section id="briefing">
+      <div class="eyebrow">Previously on AI Odyssey</div>
+      <div class="recap">
+        <a href="day1.html#lab-1-2"><small>DAY 1 · LAB 1.2</small>Built a leak-free <code>churn_training</code> table with a strict snapshot date.</a>
+        <a href="day1.html#lab-1-2"><small>DAY 1 · LAB 1.2</small>Trained <code>churn_xgb</code> and explained every customer in <code>churn_explained</code>.</a>
+        <a href="day1.html#lab-1-6"><small>DAY 1 · LAB 1.6</small>Tuned a custom XGBoost job with Bayesian search.</a>
+        <a href="day1.html#boss"><small>DAY 1 · BOSS</small>Slayed the Churn Kraken. The model works, but only in a notebook.</a>
+      </div>
+      <div class="eyebrow" style="margin-top:34px">Mission briefing</div>
+      <h2>Why most models never reach orbit</h2>
+      <div class="concept">
+        <div>
+          <p>Industry surveys have said the same thing for years: <strong>most ML models never make it to production</strong>, and many of those that do quietly decay within months. The reason is rarely the algorithm. It's the plumbing: nobody knows which data trained the model in prod, retraining is a manual notebook ritual, and the first sign of drift is an angry email from finance.</p>
+          <p>MLOps is the discipline of making ML <em>boring</em>: reproducible, observable, automated. Today you take Day 1's churn model and wrap it in the full production harness on <strong>Gemini Enterprise Agent Platform</strong> (Vertex AI until April 2026). The same harness carries over to the agents you'll build on Days 4–5.</p>
+          <h4>By sunset you will be able to…</h4>
+          <ul>
+            <li>Track experiments, compare runs and promote models through <strong>Model Registry</strong> versions and aliases.</li>
+            <li>Author, compile and run a <strong>KFP v2 pipeline</strong> with a metric-based deployment gate and full lineage.</li>
+            <li>Serve models on <strong>autoscaling online endpoints</strong>, run <strong>canary</strong> rollouts and score millions of rows with <strong>batch prediction</strong>.</li>
+            <li>Serve consistent, fresh features from a <strong>BigQuery-backed Feature Store</strong>.</li>
+            <li>Detect <strong>feature and prediction drift</strong> with Model Monitoring and alert a human.</li>
+            <li>Ship pipelines through <strong>CI/CD</strong> with Cloud Build and Artifact Registry.</li>
+          </ul>
+        </div>
+        <figure class="photo" style="margin:0"><img src="assets/img/ship-interior.jpg" alt="Interior of a spacecraft module with rows of equipment" loading="lazy"><figcaption>Production is a spacecraft: every bolt is logged, every system has telemetry.</figcaption></figure>
+      </div>
+      <div class="transmission">
+        <p>Morning, Pilot. Great work on the Kraken yesterday. Your churn model is the best this ship has seen. Now the bad news: the data science team's churn model lives in a notebook called <code>final_v3_REAL_final.ipynb</code>, last run by someone who left in March. Leadership wants it <strong>versioned, served behind an API, monitored, and retrained automatically</strong> by end of day. Don't let it drift. Mission Control out.</p>
+      </div>
+    </section>
+
+    <!-- SCHEDULE -->
+    <section id="schedule">
+      <div class="eyebrow">Today's schedule</div>
+      <h2>Flight timeline</h2>
+      <div class="timeline">
+        <div class="tl-item"><div class="tl-time">09:00 – 09:20</div><div class="tl-title">Day 1 recap &amp; Kraken leaderboard</div><p>Winning team shares their best feature, and everyone shares one thing that broke.</p></div>
+        <div class="tl-item"><div class="tl-time">09:20 – 09:50</div><div class="tl-title">Briefing: MLOps maturity levels &amp; the production harness</div></div>
+        <div class="tl-item t-lab"><div class="tl-time">09:50 – 10:30</div><div class="tl-title">Lab 2.1 · Flight Recorder</div><p>Experiments, Model Registry, versions and aliases.</p></div>
+        <div class="tl-item t-break"><div class="tl-time">10:30 – 10:45</div><div class="tl-title">☕ Refuel</div></div>
+        <div class="tl-item"><div class="tl-time">10:45 – 11:05</div><div class="tl-title">Briefing: anatomy of a pipeline, artifacts &amp; lineage</div></div>
+        <div class="tl-item t-lab"><div class="tl-time">11:05 – 12:20</div><div class="tl-title">Lab 2.2 · Pipeline Forge</div><p>KFP v2, a metric gate, caching and lineage.</p></div>
+        <div class="tl-item t-break"><div class="tl-time">12:20 – 13:05</div><div class="tl-title">🍜 Lunch</div></div>
+        <div class="tl-item"><div class="tl-time">13:05 – 13:25</div><div class="tl-title">Briefing: serving patterns: online, batch, canary, shadow</div></div>
+        <div class="tl-item t-lab"><div class="tl-time">13:25 – 14:10</div><div class="tl-title">Lab 2.3 · Endpoint Launch</div><p>Autoscaling endpoint, 90/10 canary, batch scoring.</p></div>
+        <div class="tl-item t-lab"><div class="tl-time">14:10 – 14:55</div><div class="tl-title">Briefing + Lab 2.4 · Feature Store</div><p>Training–serving skew and how to kill it.</p></div>
+        <div class="tl-item t-break"><div class="tl-time">14:55 – 15:05</div><div class="tl-title">🥤 Quick refuel</div></div>
+        <div class="tl-item t-lab"><div class="tl-time">15:05 – 15:40</div><div class="tl-title">Lab 2.5 · Drift Radar</div><p>Model Monitoring v2, with drift you cause on purpose.</p></div>
+        <div class="tl-item t-lab"><div class="tl-time">15:40 – 16:20</div><div class="tl-title">Lab 2.6 · Autopilot CI/CD</div><p>Cloud Build → Artifact Registry → PipelineJob.</p></div>
+        <div class="tl-item t-boss"><div class="tl-time">16:20 – 16:50</div><div class="tl-title">☠ Boss Battle: The Drift Leviathan</div></div>
+        <div class="tl-item"><div class="tl-time">16:50 – 17:00</div><div class="tl-title">Debrief quiz &amp; cleanup (undeploy those endpoints!)</div></div>
+      </div>
+    </section>
+
+    <!-- MATURITY -->
+    <section id="maturity">
+      <div class="eyebrow">Concept · 15 min</div>
+      <h2>MLOps maturity: from launchpad to autopilot</h2>
+      <p>Google's MLOps framework describes three levels of maturity. Most teams sit at Level 0 and believe they're at Level 1. Your goal by 17:00 is a working Level 2 system.</p>
+      <figure class="diagram">
+        <svg viewBox="0 0 1000 400" role="img" aria-label="MLOps maturity staircase: level 0 manual, level 1 pipeline automation, level 2 CI/CD automation">
+          <defs>
+            <linearGradient id="d2g1" x1="0" x2="1"><stop offset="0" stop-color="#4cc9f0"/><stop offset="1" stop-color="#8b6cff"/></linearGradient>
+            <linearGradient id="d2g2" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="rgba(76,201,240,.22)"/><stop offset="1" stop-color="rgba(76,201,240,.02)"/></linearGradient>
+            <filter id="d2glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            <marker id="d2a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10z" fill="#4cc9f0"/></marker>
+          </defs>
+          <!-- steps -->
+          <path d="M40 360 H 340 V 260 H 650 V 150 H 960" stroke="url(#d2g1)" stroke-width="3" fill="none" filter="url(#d2glow)"/>
+          <rect x="40" y="260" width="300" height="100" fill="url(#d2g2)"/>
+          <rect x="340" y="150" width="310" height="210" fill="url(#d2g2)"/>
+          <rect x="650" y="40" width="310" height="320" fill="url(#d2g2)"/>
+          <!-- L0 -->
+          <text x="60" y="290" fill="#7680ad" font-size="12" font-family="JetBrains Mono, monospace">LEVEL 0</text>
+          <text x="60" y="314" fill="#fff" font-size="18" font-weight="700">Manual launches</text>
+          <text x="60" y="336" fill="#aab2d9" font-size="13">Notebooks → hand-copied model files.</text>
+          <text x="60" y="354" fill="#aab2d9" font-size="13">Retrain = someone remembers to.</text>
+          <!-- L1 -->
+          <text x="360" y="180" fill="#4cc9f0" font-size="12" font-family="JetBrains Mono, monospace">LEVEL 1</text>
+          <text x="360" y="204" fill="#fff" font-size="18" font-weight="700">Pipeline automation</text>
+          <text x="360" y="228" fill="#aab2d9" font-size="13">• Training is a pipeline, not a notebook</text>
+          <text x="360" y="248" fill="#aab2d9" font-size="13">• Continuous training on schedule/trigger</text>
+          <text x="360" y="268" fill="#aab2d9" font-size="13">• Metadata, lineage, registry</text>
+          <text x="360" y="288" fill="#aab2d9" font-size="13">• Feature store, monitoring</text>
+          <text x="360" y="330" fill="#2ee6a6" font-size="12" font-family="JetBrains Mono, monospace">Labs 2.1 – 2.5</text>
+          <!-- L2 -->
+          <text x="670" y="70" fill="#8b6cff" font-size="12" font-family="JetBrains Mono, monospace">LEVEL 2</text>
+          <text x="670" y="94" fill="#fff" font-size="18" font-weight="700">CI/CD + CT autopilot</text>
+          <text x="670" y="118" fill="#aab2d9" font-size="13">• Pipeline code is tested &amp; built by CI</text>
+          <text x="670" y="138" fill="#aab2d9" font-size="13">• Versioned templates in Artifact Registry</text>
+          <text x="670" y="158" fill="#aab2d9" font-size="13">• Drift triggers retrain → gate → canary</text>
+          <text x="670" y="178" fill="#aab2d9" font-size="13">• Humans approve; robots execute</text>
+          <text x="670" y="220" fill="#2ee6a6" font-size="12" font-family="JetBrains Mono, monospace">Lab 2.6 + Boss Battle</text>
+          <!-- rocket -->
+          <g transform="translate(900 250) rotate(-35)">
+            <path d="M0 -26 C 10 -14, 10 10, 6 18 H -6 C -10 10, -10 -14, 0 -26 Z" fill="#e9ecff"/>
+            <circle cx="0" cy="-6" r="4" fill="#4cc9f0"/>
+            <path d="M-6 10 L-14 22 L-6 18 Z M6 10 L14 22 L6 18 Z" fill="#f72585"/>
+            <path d="M-4 20 Q 0 40 4 20" fill="#ffb703"/>
+          </g>
+        </svg>
+        <figcaption>Fig 2.1 · The MLOps maturity staircase. Each level is a set of capabilities, not a set of tools.</figcaption>
+      </figure>
+      <div class="keyterms">
+        <div class="keyterm"><b>Continuous training (CT)</b><span>Retraining is triggered automatically, by schedule, new data or detected drift, and runs as a pipeline.</span></div>
+        <div class="keyterm"><b>Model Registry</b><span>The single source of truth for model versions, their aliases (<code>champion</code>, <code>challenger</code>), lineage and deployments.</span></div>
+        <div class="keyterm"><b>Lineage</b><span>The graph that links a deployed model back to the exact pipeline run, code, parameters and data snapshot that produced it.</span></div>
+        <div class="keyterm"><b>Drift</b><span>Production inputs (feature drift) or outputs (prediction drift) diverge from what the model saw in training. Silent, inevitable, measurable.</span></div>
+      </div>
+    </section>
+
+    <!-- LAB 2.1 -->
+    <section id="lab-2-1">
+      <div class="lab" data-lab="2.1" data-xp="120">
+        <div class="lab-head">
+          <div class="lab-img" style="background-image:url('assets/img/analytics.jpg')"></div>
+          <div class="lab-meta">
+            <div class="lab-id">LAB 2.1 · WARM-UP</div>
+            <h3>Flight Recorder: experiments &amp; Model Registry</h3>
+            <div class="lab-stats"><span>⏱ 40 min</span><span class="stars">★★☆☆☆</span><span class="xp">+120 XP</span><span>🧰 Experiments · Model Registry · Colab Enterprise</span></div>
+          </div>
+        </div>
+        <div class="lab-body">
+          <p class="lab-goal">Stop losing experiments in notebook cells. Log every training run's parameters and metrics to Agent Platform Experiments, then register the winner in Model Registry with a <code>champion</code> alias and a challenger version next to it.</p>
+          <ol class="steps">
+            <li class="step">
+              <h4>Set up the Day 2 workspace</h4>
+              <p>Open a new Colab Enterprise notebook. Create the Day 2 dataset and pull Day 1's training table into memory. It's small enough for pandas.</p>
+<pre data-lang="python"><code class="language-python">PROJECT_ID = "your-project-id"   # ← change me
+REGION     = "us-central1"
+BUCKET     = f"gs://{PROJECT_ID}-odyssey"
+
+from google.cloud import aiplatform, bigquery
+bq = bigquery.Client(project=PROJECT_ID)
+bq.query("CREATE SCHEMA IF NOT EXISTS `odyssey_d2` OPTIONS (location='US')").result()
+
+# Numeric-only features keep online serving simple: one row = one float array
+NUM = ["n_orders", "revenue", "avg_item_price", "return_rate",
+       "n_categories", "recency_days", "tenure_days", "age"]
+df = bq.query(f"SELECT user_id, {', '.join(NUM)}, churned "
+              "FROM `odyssey_d1.churn_training`").to_dataframe()
+print(df.shape, df.churned.mean().round(3))</code></pre>
+              <div class="callout info"><span class="ttl">Missed Day 1?</span><p>Run the step-1 SQL from <a href="day1.html#lab-1-2">Lab 1.2</a> to recreate <code>odyssey_d1.churn_training</code>. It takes about 30 seconds.</p></div>
+            </li>
+            <li class="step">
+              <h4>Create an experiment and log a sweep of runs</h4>
+              <details class="predict"><summary>Six runs: depth 3/6/9 × learning rate 0.05/0.2. Which combo wins on AUC?</summary><div><p>Usually a <strong>moderate depth with the low learning rate</strong> wins narrowly. Depth 9 at 0.2 tends to overfit and shows the worst log loss. The bigger lesson: the spread between runs is tiny. Without tracking, you'd never know which notebook cell produced the "good" one.</p></div></details>
+<pre data-lang="python"><code class="language-python">import xgboost as xgb
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import roc_auc_score, log_loss
+
+aiplatform.init(project=PROJECT_ID, location=REGION, staging_bucket=BUCKET,
+                experiment="churn-odyssey",
+                experiment_description="Day 2 · Luna — churn model sweep")
+
+X, y = df[NUM], df["churned"]
+X_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
+
+def train(max_depth, learning_rate, n_estimators=300):
+    m = xgb.XGBClassifier(max_depth=max_depth, learning_rate=learning_rate,
+                          n_estimators=n_estimators, tree_method="hist",
+                          eval_metric="auc", early_stopping_rounds=30)
+    m.fit(X_tr, y_tr, eval_set=[(X_te, y_te)], verbose=False)
+    p = m.predict_proba(X_te)[:, 1]
+    return m, roc_auc_score(y_te, p), log_loss(y_te, p)
+
+models = {}
+for depth in [3, 6, 9]:
+    for lr in [0.05, 0.2]:
+        run = f"xgb-d{depth}-lr{str(lr).replace('.', '')}"   # lowercase, digits, hyphens only
+        aiplatform.start_run(run)
+        aiplatform.log_params({"max_depth": depth, "learning_rate": lr, "features": len(NUM)})
+        m, auc, ll = train(depth, lr)
+        aiplatform.log_metrics({"roc_auc": round(auc, 4), "log_loss": round(ll, 4)})
+        aiplatform.end_run()
+        models[run] = (m, auc)
+        print(f"{run:16s} auc={auc:.4f}")</code></pre>
+            </li>
+            <li class="step">
+              <h4>Compare runs like a flight engineer</h4>
+<pre data-lang="python"><code class="language-python">runs = aiplatform.get_experiment_df("churn-odyssey")
+runs[["run_name", "param.max_depth", "param.learning_rate",
+      "metric.roc_auc", "metric.log_loss"]].sort_values("metric.roc_auc", ascending=False)</code></pre>
+              <p>Then open <strong>Console → Agent Platform → Experiments → churn-odyssey</strong>. Select all runs and click <strong>Compare</strong> to get parallel-coordinate plots for free.</p>
+              <figure class="shot"><div class="shot-bar"><i></i><i></i><i></i><span>Colab Enterprise · get_experiment_df()</span><span class="live">REPRESENTATIVE</span></div>
+<div class="term"><span class="c">   run_name          param.max_depth  param.learning_rate  metric.roc_auc  metric.log_loss</span>
+<span class="w">0</span>  xgb-d6-lr005      6                0.05                 <span class="p">0.7884</span>          0.5121
+<span class="w">1</span>  xgb-d3-lr005      3                0.05                 0.7861          0.5139
+<span class="w">2</span>  xgb-d3-lr02       3                0.20                 0.7852          0.5150
+<span class="w">3</span>  xgb-d6-lr02       6                0.20                 0.7820          0.5197
+<span class="w">4</span>  xgb-d9-lr005      9                0.05                 0.7811          0.5208
+<span class="w">5</span>  xgb-d9-lr02       9                0.20                 <span class="m">0.7743</span>          <span class="m">0.5302</span></div><figcaption><b>Representative output.</b> Your values will differ, but the ranking pattern is typical.</figcaption></figure>
+              <div class="expect">Six runs with AUCs within a few hundredths of each other. Deeper trees with a high learning rate usually overfit slightly and show worse log loss.</div>
+            </li>
+            <li class="step">
+              <h4>Save the two best models to Cloud Storage</h4>
+<pre data-lang="python"><code class="language-python">ranked = sorted(models.items(), key=lambda kv: kv[1][1], reverse=True)
+for tag, (name, (m, auc)) in zip(["v1", "v2"], ranked[:2]):
+    m.get_booster().save_model("model.bst")     # prebuilt container expects model.bst
+    !gsutil -q cp model.bst {BUCKET}/d2/models/{tag}/model.bst
+    print(tag, name, round(auc, 4))</code></pre>
+            </li>
+            <li class="step">
+              <h4>Register v1 as <code>champion</code> and v2 as a challenger version</h4>
+<pre data-lang="python"><code class="language-python"># Pick the newest XGBoost *prediction* image matching your local xgboost major.minor
+SERVING_IMAGE = "us-docker.pkg.dev/vertex-ai/prediction/xgboost-cpu.2-1:latest"
+
+champion = aiplatform.Model.upload(
+    display_name="churn-xgb",
+    artifact_uri=f"{BUCKET}/d2/models/v1/",
+    serving_container_image_uri=SERVING_IMAGE,
+    version_aliases=["champion"],
+    version_description="Best of Lab 2.1 sweep",
+    labels={"world": "luna", "owner": "team-odyssey"},
+)
+
+challenger = aiplatform.Model.upload(
+    parent_model=champion.resource_name,          # ← same model, new version
+    artifact_uri=f"{BUCKET}/d2/models/v2/",
+    serving_container_image_uri=SERVING_IMAGE,
+    is_default_version=False,
+    version_aliases=["challenger"],
+    version_description="Runner-up of Lab 2.1 sweep",
+)
+print(champion.resource_name, champion.version_id, challenger.version_id)
+
+# Anyone can now load "whatever is champion" without knowing the version number
+current = aiplatform.Model(f"{champion.resource_name}@champion")</code></pre>
+              <div class="callout tip"><span class="ttl">Aliases are your promotion mechanism</span><p>Pipelines and endpoints should reference <code>@champion</code>, not version <code>3</code>. Promotion then becomes a metadata change: <code>aiplatform.models.ModelRegistry(champion).add_version_aliases(["champion"], version="2")</code> moves the alias atomically.</p></div>
+            </li>
+            <li class="step">
+              <h4>Register a BQML model straight from SQL</h4>
+              <p>Your Day 1 BQML models can live in the same registry. Add two options to <code>CREATE MODEL</code>:</p>
+<pre data-lang="sql"><code class="language-sql">CREATE OR REPLACE MODEL `odyssey_d2.churn_bqml_registered`
+OPTIONS (
+  model_type = 'BOOSTED_TREE_CLASSIFIER',
+  input_label_cols = ['churned'],
+  max_iterations = 50,
+  model_registry = 'vertex_ai',
+  vertex_ai_model_id = 'churn_bqml',
+  vertex_ai_model_version_aliases = ['sql-champion']
+) AS
+SELECT * EXCEPT (user_id) FROM `odyssey_d1.churn_training`;</code></pre>
+              <p class="dim">Look in Model Registry: the BQML model sits next to <code>churn-xgb</code>, ready to deploy to an endpoint. You can also register an existing model with <code>ALTER MODEL … SET OPTIONS (vertex_ai_model_id = '…')</code>.</p>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- ANATOMY -->
+    <section id="anatomy">
+      <div class="eyebrow">Concept · 20 min</div>
+      <h2>Anatomy of a pipeline</h2>
+      <p>A <strong>Kubeflow Pipelines (KFP) v2</strong> pipeline is a directed acyclic graph of <em>components</em>. Each component is a containerized function with typed inputs and outputs. Agent Platform Pipelines runs each step serverlessly, passes <strong>artifacts</strong> (datasets, models, metrics) between them through Cloud Storage, and records everything in <strong>Metadata</strong>. You never manage a Kubernetes cluster.</p>
+      <figure class="diagram">
+        <svg viewBox="0 0 1000 360" role="img" aria-label="Pipeline DAG: BigQuery snapshot, extract, train, evaluate, AUC gate, register; artifacts recorded in metadata store for lineage">
+          <defs>
+            <linearGradient id="d2g3" x1="0" x2="1"><stop offset="0" stop-color="#4cc9f0"/><stop offset="1" stop-color="#2ee6a6"/></linearGradient>
+            <marker id="d2b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10z" fill="#4cc9f0"/></marker>
+            <marker id="d2c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10z" fill="#7680ad"/></marker>
+          </defs>
+          <g font-size="13" text-anchor="middle">
+            <rect x="20" y="60" width="140" height="64" rx="14" fill="#0c1230" stroke="#4cc9f0"/><text x="90" y="88" fill="#fff" font-weight="700">BigQuery</text><text x="90" y="108" fill="#aab2d9" font-size="11">snapshot (GCPC)</text>
+            <rect x="190" y="60" width="140" height="64" rx="14" fill="#0c1230" stroke="#4cc9f0"/><text x="260" y="88" fill="#fff" font-weight="700">extract</text><text x="260" y="108" fill="#aab2d9" font-size="11">train/test split</text>
+            <rect x="360" y="60" width="140" height="64" rx="14" fill="#0c1230" stroke="#4cc9f0"/><text x="430" y="88" fill="#fff" font-weight="700">train</text><text x="430" y="108" fill="#aab2d9" font-size="11">xgboost</text>
+            <rect x="530" y="60" width="140" height="64" rx="14" fill="#0c1230" stroke="#4cc9f0"/><text x="600" y="88" fill="#fff" font-weight="700">evaluate</text><text x="600" y="108" fill="#aab2d9" font-size="11">ROC · AUC</text>
+            <path d="M770 52 L835 92 L770 132 L705 92 Z" fill="rgba(255,183,3,.12)" stroke="#ffb703"/><text x="770" y="88" fill="#ffb703" font-weight="700" font-size="12">dsl.If</text><text x="770" y="104" fill="#ffb703" font-size="11">AUC ≥ τ</text>
+            <rect x="860" y="60" width="125" height="64" rx="14" fill="rgba(46,230,166,.1)" stroke="#2ee6a6"/><text x="922" y="88" fill="#fff" font-weight="700">register</text><text x="922" y="108" fill="#aab2d9" font-size="11">@challenger</text>
+          </g>
+          <g stroke="#4cc9f0" stroke-width="2" fill="none" marker-end="url(#d2b)">
+            <path d="M160 92 H 188"/><path d="M330 92 H 358"/><path d="M500 92 H 528"/><path d="M670 92 H 703"/><path d="M835 92 H 858"/>
+          </g>
+          <!-- artifacts -->
+          <g font-size="11" text-anchor="middle" font-family="JetBrains Mono, monospace">
+            <rect x="200" y="170" width="120" height="30" rx="15" fill="rgba(139,108,255,.14)" stroke="#8b6cff"/><text x="260" y="190" fill="#b9a8ff">Dataset × 2</text>
+            <rect x="370" y="170" width="120" height="30" rx="15" fill="rgba(139,108,255,.14)" stroke="#8b6cff"/><text x="430" y="190" fill="#b9a8ff">Model</text>
+            <rect x="540" y="170" width="120" height="30" rx="15" fill="rgba(139,108,255,.14)" stroke="#8b6cff"/><text x="600" y="190" fill="#b9a8ff">ClassifMetrics</text>
+            <rect x="862" y="170" width="120" height="30" rx="15" fill="rgba(139,108,255,.14)" stroke="#8b6cff"/><text x="922" y="190" fill="#b9a8ff">Registry version</text>
+          </g>
+          <g stroke="#8b6cff" stroke-width="1.4" stroke-dasharray="4 4" fill="none"><path d="M260 124 V 168"/><path d="M430 124 V 168"/><path d="M600 124 V 168"/><path d="M922 124 V 168"/></g>
+          <!-- metadata -->
+          <rect x="120" y="250" width="760" height="80" rx="18" fill="rgba(76,201,240,.06)" stroke="url(#d2g3)" stroke-width="2"/>
+          <text x="500" y="280" text-anchor="middle" fill="#4cc9f0" font-weight="700" font-size="15">Agent Platform Metadata · lineage graph</text>
+          <text x="500" y="304" text-anchor="middle" fill="#aab2d9" font-size="12">every artifact ↔ execution ↔ parameters ↔ code image · "which data trained the model in prod?" answered in one click</text>
+          <g stroke="#7680ad" stroke-width="1.2" fill="none" marker-end="url(#d2c)"><path d="M260 200 V 248"/><path d="M430 200 V 248"/><path d="M600 200 V 248"/><path d="M922 200 C 922 230, 880 240, 860 250"/></g>
+          <text x="20" y="40" fill="#7680ad" font-size="12" font-family="JetBrains Mono, monospace">pipeline_root = gs://…/d2/pipeline_root  ·  cached steps skip re-execution</text>
+        </svg>
+        <figcaption>Fig 2.2 · The Lab 2.2 pipeline. Solid arrows are execution order; dashed lines are artifacts written to Cloud Storage and tracked in Metadata.</figcaption>
+      </figure>
+      <div class="grid g3">
+        <div class="card"><span class="tag">Component</span><h4>Lightweight Python</h4><p class="dim"><code>@dsl.component</code> turns a function into a container step. Imports go <em>inside</em> the function because it runs in its own container.</p></div>
+        <div class="card"><span class="tag violet">Artifact</span><h4>Typed outputs</h4><p class="dim"><code>Output[Dataset]</code>, <code>Output[Model]</code>, <code>Output[ClassificationMetrics]</code> are files under <code>pipeline_root</code> plus metadata. The console renders metrics as ROC curves.</p></div>
+        <div class="card"><span class="tag amber">Control flow</span><h4>dsl.If / dsl.Else</h4><p class="dim">Conditional branches on runtime values. KFP 2.x renamed <code>dsl.Condition</code> to <code>dsl.If</code>. Also: <code>dsl.ParallelFor</code>, <code>dsl.ExitHandler</code>.</p></div>
+      </div>
+    </section>
+
+    <!-- LAB 2.2 -->
+    <section id="lab-2-2">
+      <div class="lab" data-lab="2.2" data-xp="200">
+        <div class="lab-head">
+          <div class="lab-img" style="background-image:url('assets/img/blueprint.jpg')"></div>
+          <div class="lab-meta">
+            <div class="lab-id">LAB 2.2 · CORE</div>
+            <h3>Pipeline Forge: a gated training pipeline in KFP v2</h3>
+            <div class="lab-stats"><span>⏱ 75 min</span><span class="stars">★★★★☆</span><span class="xp">+200 XP</span><span>🧰 KFP v2 · GCPC · Pipelines · Metadata</span></div>
+          </div>
+        </div>
+        <div class="lab-body">
+          <p class="lab-goal">Turn the notebook into a reproducible pipeline: snapshot features in BigQuery, split, train, evaluate with a rendered ROC curve, and register a new <code>challenger</code> version <em>only if</em> AUC clears a threshold. Then rerun it and watch caching skip unchanged steps.</p>
+          <ol class="steps">
+            <li class="step">
+              <h4>Install the SDKs and grant permissions</h4>
+<pre data-lang="bash"><code class="language-bash">!pip -q install --upgrade kfp google-cloud-pipeline-components google-cloud-aiplatform
+
+# Pipelines run as the Compute Engine default SA unless you pass one.
+# Give it what the steps need (run once, in Cloud Shell):
+PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID --format='value(projectNumber)')
+SA="${PROJECT_NUMBER}-compute@developer.gserviceaccount.com"
+for ROLE in roles/aiplatform.user roles/bigquery.jobUser roles/bigquery.dataEditor roles/storage.objectAdmin; do
+  gcloud projects add-iam-policy-binding $PROJECT_ID --member="serviceAccount:$SA" --role=$ROLE --quiet
+done</code></pre>
+              <div class="callout warn"><span class="ttl">Least privilege in real life</span><p>In production, create a dedicated <code>pipelines-runner@</code> service account and pass it to <code>job.submit(service_account=…)</code>. The default compute SA is fine for a class, but don't let it become a habit.</p></div>
+            </li>
+            <li class="step">
+              <h4>Write the components</h4>
+<pre data-lang="python"><code class="language-python">from kfp import dsl, compiler
+from kfp.dsl import Input, Output, Dataset, Model, ClassificationMetrics
+
+FEATURES = ["n_orders", "revenue", "avg_item_price", "return_rate",
+            "n_categories", "recency_days", "tenure_days", "age"]
+
+@dsl.component(base_image="python:3.11",
+               packages_to_install=["google-cloud-bigquery[pandas]", "db-dtypes", "pyarrow", "scikit-learn"])
+def extract(project: str, table: str, features: list,
+            train_ds: Output[Dataset], test_ds: Output[Dataset]):
+    from google.cloud import bigquery
+    from sklearn.model_selection import train_test_split
+    cols = ", ".join(features)
+    df = bigquery.Client(project=project).query(
+        f"SELECT {cols}, churned FROM `{table}`").to_dataframe()
+    tr, te = train_test_split(df, test_size=0.2, random_state=42, stratify=df["churned"])
+    tr.to_parquet(train_ds.path); te.to_parquet(test_ds.path)
+    train_ds.metadata["rows"] = len(tr); test_ds.metadata["rows"] = len(te)
+
+@dsl.component(base_image="python:3.11",
+               packages_to_install=["xgboost==2.1.*", "pandas", "pyarrow"])
+def train(train_ds: Input[Dataset], max_depth: int, learning_rate: float,
+          model: Output[Model]):
+    import os, pandas as pd, xgboost as xgb
+    df = pd.read_parquet(train_ds.path)
+    y = df.pop("churned")
+    m = xgb.XGBClassifier(max_depth=max_depth, learning_rate=learning_rate,
+                          n_estimators=200, tree_method="hist")
+    m.fit(df, y)
+    os.makedirs(model.path, exist_ok=True)              # model.uri is a GCS "directory"
+    m.get_booster().save_model(os.path.join(model.path, "model.bst"))
+    model.metadata.update({"framework": "xgboost", "max_depth": max_depth})
+
+@dsl.component(base_image="python:3.11",
+               packages_to_install=["xgboost==2.1.*", "pandas", "pyarrow", "scikit-learn"])
+def evaluate(test_ds: Input[Dataset], model: Input[Model],
+             metrics: Output[ClassificationMetrics]) -&gt; float:
+    import os, pandas as pd, xgboost as xgb
+    from sklearn.metrics import roc_auc_score, roc_curve
+    df = pd.read_parquet(test_ds.path); y = df.pop("churned")
+    booster = xgb.Booster(); booster.load_model(os.path.join(model.path, "model.bst"))
+    p = booster.predict(xgb.DMatrix(df))
+    fpr, tpr, thr = roc_curve(y, p)
+    step = max(1, len(fpr) // 200)                       # keep the artifact small
+    metrics.log_roc_curve(fpr[::step].tolist(), tpr[::step].tolist(),
+                          [min(float(t), 1.0) for t in thr[::step]])
+    return float(roc_auc_score(y, p))
+
+@dsl.component(base_image="python:3.11", packages_to_install=["google-cloud-aiplatform"])
+def register(project: str, region: str, model: Input[Model], auc: float,
+             serving_image: str) -&gt; str:
+    from google.cloud import aiplatform
+    aiplatform.init(project=project, location=region)
+    parents = aiplatform.Model.list(filter='display_name="churn-xgb"')
+    m = aiplatform.Model.upload(
+        display_name="churn-xgb",
+        parent_model=parents[0].resource_name if parents else None,
+        artifact_uri=model.uri,
+        serving_container_image_uri=serving_image,
+        is_default_version=not parents,
+        version_aliases=["challenger"],
+        version_description=f"pipeline run · auc={auc:.4f}",
+        labels={"source": "pipeline"},
+    )
+    return m.versioned_resource_name</code></pre>
+              <details class="deep"><summary>Why not the prebuilt ModelUploadOp?</summary><div><p><strong>Google Cloud Pipeline Components</strong> (GCPC) ships ready-made ops like <code>ModelUploadOp</code>, <code>EndpointCreateOp</code>, <code>ModelDeployOp</code>, <code>BigqueryQueryJobOp</code> and <code>CustomTrainingJobOp</code>. They're great, but <code>ModelUploadOp</code> wants an <code>UnmanagedContainerModel</code> artifact built with <code>dsl.importer</code>. A tiny SDK-based component is easier to read in a class and makes versioning (<code>parent_model</code>) explicit. Use GCPC where it saves code, as we do for BigQuery below.</p></div></details>
+            </li>
+            <li class="step">
+              <h4>Wire the DAG with a metric gate</h4>
+<pre data-lang="python"><code class="language-python">from google_cloud_pipeline_components.v1.bigquery import BigqueryQueryJobOp
+
+@dsl.pipeline(name="churn-odyssey-pipeline",
+              description="Snapshot → split → train → evaluate → gated register")
+def churn_pipeline(project: str, region: str = "us-central1",
+                   max_depth: int = 6, learning_rate: float = 0.1,
+                   auc_threshold: float = 0.70,
+                   serving_image: str = "us-docker.pkg.dev/vertex-ai/prediction/xgboost-cpu.2-1:latest"):
+
+    snapshot = BigqueryQueryJobOp(
+        project=project, location="US",
+        query="""CREATE OR REPLACE TABLE `odyssey_d2.train_snapshot` AS
+                 SELECT * FROM `odyssey_d1.churn_training`""",
+    ).set_display_name("bq-snapshot")
+
+    data = extract(project=project, table="odyssey_d2.train_snapshot",
+                   features=FEATURES).after(snapshot)
+
+    trained = train(train_ds=data.outputs["train_ds"],
+                    max_depth=max_depth, learning_rate=learning_rate)
+    trained.set_cpu_limit("4").set_memory_limit("16G")
+
+    scored = evaluate(test_ds=data.outputs["test_ds"], model=trained.outputs["model"])
+
+    with dsl.If(scored.outputs["Output"] &gt;= auc_threshold, name="auc-gate"):
+        register(project=project, region=region, model=trained.outputs["model"],
+                 auc=scored.outputs["Output"], serving_image=serving_image)
+
+compiler.Compiler().compile(churn_pipeline, "churn_pipeline.yaml")
+print("✅ compiled")</code></pre>
+              <div class="callout tip"><span class="ttl">Single return value = "Output"</span><p>When a component returns a plain value and also has artifact outputs, KFP exposes the return value as <code>task.outputs["Output"]</code>. Comparing it to a pipeline parameter inside <code>dsl.If</code> is evaluated at runtime by the orchestrator.</p></div>
+            </li>
+            <li class="step">
+              <h4>Launch it into orbit</h4>
+              <details class="predict"><summary>Which step will take longest, and will the gate open at AUC ≥ 0.70?</summary><div><p><strong>Container start-up dominates.</strong> Each lightweight component pulls an image and pip-installs packages, so a 5-second training function can take minutes of wall time. The gate should open, because Day 1's features comfortably clear 0.70.</p></div></details>
+<pre data-lang="python"><code class="language-python">job = aiplatform.PipelineJob(
+    display_name="churn-odyssey",
+    template_path="churn_pipeline.yaml",
+    pipeline_root=f"{BUCKET}/d2/pipeline_root",
+    parameter_values={"project": PROJECT_ID, "auc_threshold": 0.70},
+    enable_caching=True,
+)
+job.submit()          # returns immediately; click the console link that prints
+# job.wait()          # or block until done</code></pre>
+              <figure class="shot"><div class="shot-bar"><i></i><i></i><i></i><span>Agent Platform · Pipelines · churn-odyssey run</span><span class="live">REPRESENTATIVE</span></div>
+<div class="term"><span class="p">✔</span> bq-snapshot        <span class="c">Succeeded  1m 42s</span>
+<span class="p">✔</span> extract            <span class="c">Succeeded  2m 05s</span>
+<span class="p">✔</span> train              <span class="c">Succeeded  3m 11s</span>
+<span class="p">✔</span> evaluate           <span class="c">Succeeded  1m 37s   roc_auc=</span><span class="y">0.788</span>
+<span class="b">◆</span> condition-auc-gate <span class="c">roc_auc 0.788 ≥ 0.70 → </span><span class="p">TRUE</span>
+<span class="p">✔</span> register           <span class="c">Succeeded  0m 58s   churn-xgb@challenger (version 3)</span>
+<span class="w">Pipeline state: SUCCEEDED · total 9m 54s</span></div><figcaption><b>Representative run summary.</b> The console shows the same as a visual DAG.</figcaption></figure>
+              <div class="expect">A green DAG in about 8–12 minutes. Click <strong>evaluate → metrics</strong> to see a rendered ROC curve. If AUC ≥ 0.70, the <code>auc-gate</code> branch runs and a new <code>churn-xgb</code> version appears in Model Registry tagged <code>challenger</code>.</div>
+            </li>
+            <li class="step">
+              <h4>Test the gate and caching</h4>
+<pre data-lang="python"><code class="language-python"># 1) Impossible bar → the register step should be skipped (grey), not failed
+aiplatform.PipelineJob(
+    display_name="churn-odyssey-highbar",
+    template_path="churn_pipeline.yaml",
+    pipeline_root=f"{BUCKET}/d2/pipeline_root",
+    parameter_values={"project": PROJECT_ID, "auc_threshold": 0.99},
+    enable_caching=True,
+).submit()</code></pre>
+              <p>Notice that <code>extract</code>, <code>train</code> and <code>evaluate</code> show a <strong>cache</strong> icon and finish in seconds, because their inputs didn't change. <code>bq-snapshot</code> also hits the cache, even though the underlying table <em>could</em> have changed. That's the classic caching footgun.</p>
+              <details class="hint"><summary>How do I force fresh data?</summary><div><p>Disable caching per task with <code>snapshot.set_caching_options(False)</code>, or pass a changing parameter (e.g., <code>run_date</code>) into the query so the cache key changes. Rule: <strong>steps that read mutable external state should not be cached.</strong></p></div></details>
+            </li>
+            <li class="step">
+              <h4>Follow the lineage</h4>
+              <p>In the run graph, click the <strong>model</strong> artifact → <strong>View lineage</strong>. You'll see the exact Dataset, the BigQuery job and the pipeline run that produced it. Then go to Model Registry → <code>churn-xgb</code> → the challenger version, which links back to the same graph.</p>
+              <p class="dim">Team question: an auditor asks "what data trained the model that denied this customer a discount?" How many clicks does it take you now? How many would it have taken yesterday?</p>
+            </li>
+          </ol>
+          <div class="sidequest" data-sq="2.2-cache-breaker" data-xp="50"><div class="sq-ico">🧊</div><div><span class="sq-tag">SIDE QUEST · LEARN BY BREAKING</span><b>Cache Breaker</b><p>Change only the <em>evaluate</em> component (e.g. also log PR AUC), recompile and resubmit. Predict which steps re-run and which hit the cache, then check the DAG. Bonus: explain why changing <code>train</code> would invalidate everything downstream.</p></div><button type="button"></button></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BANNER -->
+    <section class="banner" style="margin:0 -24px 72px;border-radius:20px">
+      <div class="bg" style="background-image:url('assets/img/moon-crescent.jpg')"></div>
+      <div class="wrap">
+        <blockquote>"Only a small fraction of real-world ML systems is composed of the ML code. The required surrounding infrastructure is vast and complex."</blockquote>
+        <cite>— Sculley et al., "Hidden Technical Debt in Machine Learning Systems" (NeurIPS 2015)</cite>
+      </div>
+    </section>
+
+    <!-- SERVING -->
+    <section id="serving">
+      <div class="eyebrow">Concept · 20 min</div>
+      <h2>Serving patterns: online, batch, canary, shadow</h2>
+      <div class="grid g4">
+        <div class="card"><div class="icon">⚡</div><h4>Online</h4><p class="dim">Low-latency REST/gRPC on an <strong>endpoint</strong> with autoscaling replicas. Use it for checkout-time decisions. You pay per node-hour, even when idle.</p></div>
+        <div class="card"><div class="icon">📦</div><h4>Batch</h4><p class="dim">Score millions of rows from BigQuery or GCS on ephemeral workers. Use it for nightly churn scores. You pay only while the job runs.</p></div>
+        <div class="card"><div class="icon">🐤</div><h4>Canary</h4><p class="dim">Send a slice (5–10%) of live traffic to the challenger and compare. Use it for safe rollouts. Rollback is one traffic-split update.</p></div>
+        <div class="card"><div class="icon">👻</div><h4>Shadow</h4><p class="dim">Mirror traffic to the challenger but <em>discard</em> its answers. Zero user risk, so it's useful for high-stakes models. Typically built at the app or gateway layer.</p></div>
+      </div>
+      <figure class="diagram">
+        <svg viewBox="0 0 1000 300" role="img" aria-label="Canary deployment: clients send requests to one endpoint which splits 90 percent to champion and 10 percent to challenger, with logging to BigQuery">
+          <defs>
+            <marker id="d2d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10z" fill="#4cc9f0"/></marker>
+            <marker id="d2e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10z" fill="#ffb703"/></marker>
+            <linearGradient id="d2g4" x1="0" x2="1"><stop offset="0" stop-color="#4cc9f0"/><stop offset="1" stop-color="#8b6cff"/></linearGradient>
+          </defs>
+          <g font-size="13" text-anchor="middle">
+            <rect x="20" y="110" width="150" height="70" rx="14" fill="#0c1230" stroke="#7680ad"/><text x="95" y="140" fill="#fff" font-weight="700">Checkout app</text><text x="95" y="160" fill="#aab2d9" font-size="11">predict(instances)</text>
+            <rect x="260" y="95" width="200" height="100" rx="18" fill="rgba(76,201,240,.08)" stroke="url(#d2g4)" stroke-width="2"/><text x="360" y="130" fill="#4cc9f0" font-weight="700">Endpoint</text><text x="360" y="152" fill="#aab2d9" font-size="11">churn-endpoint</text><text x="360" y="172" fill="#aab2d9" font-size="11">traffic_split</text>
+            <rect x="590" y="40" width="210" height="80" rx="14" fill="#0c1230" stroke="#4cc9f0"/><text x="695" y="70" fill="#fff" font-weight="700">churn-xgb@champion</text><text x="695" y="92" fill="#aab2d9" font-size="11">n2-standard-4 · 1–3 replicas</text>
+            <rect x="590" y="170" width="210" height="80" rx="14" fill="#0c1230" stroke="#ffb703"/><text x="695" y="200" fill="#fff" font-weight="700">churn-xgb@challenger</text><text x="695" y="222" fill="#aab2d9" font-size="11">n2-standard-4 · 1–2 replicas</text>
+            <rect x="850" y="105" width="130" height="80" rx="14" fill="rgba(139,108,255,.1)" stroke="#8b6cff"/><text x="915" y="138" fill="#fff" font-weight="700">BigQuery</text><text x="915" y="158" fill="#aab2d9" font-size="11">request logs</text>
+          </g>
+          <path d="M170 145 H 258" stroke="#4cc9f0" stroke-width="2.5" marker-end="url(#d2d)" fill="none"/>
+          <path d="M460 130 C 520 120, 540 80, 588 80" stroke="#4cc9f0" stroke-width="6" marker-end="url(#d2d)" fill="none"/>
+          <path d="M460 160 C 520 170, 540 210, 588 210" stroke="#ffb703" stroke-width="2" marker-end="url(#d2e)" fill="none"/>
+          <text x="530" y="90" fill="#4cc9f0" font-size="15" font-weight="700" font-family="JetBrains Mono, monospace">90%</text>
+          <text x="530" y="222" fill="#ffb703" font-size="15" font-weight="700" font-family="JetBrains Mono, monospace">10%</text>
+          <g stroke="#8b6cff" stroke-width="1.4" stroke-dasharray="4 4" fill="none"><path d="M800 80 C 830 80, 840 110, 848 125"/><path d="M800 210 C 830 210, 840 180, 848 165"/></g>
+          <text x="500" y="285" text-anchor="middle" fill="#7680ad" font-size="12" font-family="JetBrains Mono, monospace">promote = endpoint.update(traffic_split={challenger: 100}) · rollback = the reverse</text>
+        </svg>
+        <figcaption>Fig 2.3 · A canary rollout on a single endpoint. Both versions log to BigQuery, which feeds Model Monitoring in Lab 2.5.</figcaption>
+      </figure>
+    </section>
+
+    <!-- LAB 2.3 -->
+    <section id="lab-2-3">
+      <div class="lab" data-lab="2.3" data-xp="150">
+        <div class="lab-head">
+          <div class="lab-img" style="background-image:url('assets/img/servers.jpg')"></div>
+          <div class="lab-meta">
+            <div class="lab-id">LAB 2.3 · CORE</div>
+            <h3>Endpoint Launch: online serving, canary &amp; batch</h3>
+            <div class="lab-stats"><span>⏱ 45 min</span><span class="stars">★★★☆☆</span><span class="xp">+150 XP</span><span>🧰 Endpoints · Autoscaling · Batch prediction</span></div>
+          </div>
+        </div>
+        <div class="lab-body">
+          <p class="lab-goal">Deploy the champion behind an autoscaling endpoint with request logging, send live predictions, roll out the challenger as a 10% canary, then score the whole customer base with a BigQuery-to-BigQuery batch job.</p>
+          <ol class="steps">
+            <li class="step">
+              <h4>Create an endpoint with request/response logging</h4>
+<pre data-lang="python"><code class="language-python">endpoint = aiplatform.Endpoint.create(
+    display_name="churn-endpoint",
+    enable_request_response_logging=True,
+    request_response_logging_sampling_rate=1.0,      # 100% for the lab; ~5-10% in prod
+    request_response_logging_bq_destination_table=f"bq://{PROJECT_ID}.odyssey_d2.endpoint_logs",
+)
+print(endpoint.resource_name)</code></pre>
+            </li>
+            <li class="step">
+              <h4>Deploy the champion with autoscaling</h4>
+              <details class="predict"><summary>How long does a first deployment take: 30 seconds, 5 minutes, or 30 minutes?</summary><div><p>Typically <strong>5–15 minutes</strong>: nodes are provisioned, the serving image is pulled and the model is loaded, then health checks pass. That's why you deploy before the break, and why autoscaling from zero isn't instant.</p></div></details>
+<pre data-lang="python"><code class="language-python">champ = aiplatform.Model(f"{champion.resource_name}@champion")
+champ.deploy(
+    endpoint=endpoint,
+    deployed_model_display_name="champion",
+    machine_type="n2-standard-4",
+    min_replica_count=1,
+    max_replica_count=3,
+    autoscaling_target_cpu_utilization=60,
+    traffic_percentage=100,
+)   # ~10-15 min the first time: it provisions nodes and pulls the container</code></pre>
+              <div class="callout cost"><span class="ttl">The meter is running</span><p>A deployed model bills per node-hour <strong>whether or not it gets traffic</strong>. One n2-standard-4 replica costs a few dollars a day. The cleanup at the end of today undeploys everything, so don't skip it.</p></div>
+            </li>
+            <li class="step">
+              <h4>Fire live predictions</h4>
+<pre data-lang="python"><code class="language-python">sample = df.sample(5, random_state=7)
+resp = endpoint.predict(instances=sample[NUM].astype(float).values.tolist())
+for uid, p, truth in zip(sample.user_id, resp.predictions, sample.churned):
+    print(f"user {uid}: churn_prob={float(p):.3f}  actual={truth}")
+print("served by deployed model:", resp.deployed_model_id)</code></pre>
+              <figure class="shot"><div class="shot-bar"><i></i><i></i><i></i><span>Colab Enterprise · endpoint.predict()</span><span class="live">REPRESENTATIVE</span></div>
+<div class="term">user 48213: churn_prob=<span class="m">0.871</span>  actual=1
+user 9077:  churn_prob=0.214  actual=0
+user 61540: churn_prob=<span class="m">0.792</span>  actual=1
+user 30311: churn_prob=0.466  actual=0
+user 7702:  churn_prob=<span class="m">0.903</span>  actual=1
+<span class="c">served by deployed model:</span> <span class="b">4417730551299522560</span></div><figcaption><b>Representative output.</b> IDs and probabilities are illustrative.</figcaption></figure>
+              <div class="expect">Five probabilities between 0 and 1. The XGBoost container returns the positive-class probability for binary classifiers.</div>
+              <details class="hint"><summary>Calling it from curl (what your app team will do)</summary><div>
+<pre data-lang="bash"><code class="language-bash">ENDPOINT_ID=$(gcloud ai endpoints list --region=us-central1 \
+  --filter=display_name=churn-endpoint --format='value(name)' | awk -F/ '{print $NF}')
+curl -s -X POST -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+  -H "Content-Type: application/json" \
+  "https://us-central1-aiplatform.googleapis.com/v1/projects/$PROJECT_ID/locations/us-central1/endpoints/$ENDPOINT_ID:predict" \
+  -d '{"instances": [[3, 240.5, 60.1, 0.0, 2, 45, 400, 31]]}'</code></pre>
+              </div></details>
+            </li>
+            <li class="step">
+              <h4>Roll out the challenger as a 10% canary</h4>
+<pre data-lang="python"><code class="language-python">chall = aiplatform.Model(f"{champion.resource_name}@challenger")
+chall.deploy(
+    endpoint=endpoint,
+    deployed_model_display_name="challenger",
+    machine_type="n2-standard-4",
+    min_replica_count=1, max_replica_count=2,
+    traffic_percentage=10,          # champion is automatically scaled to 90
+)
+endpoint = aiplatform.Endpoint(endpoint.resource_name)   # refresh
+print(endpoint.traffic_split)
+
+# Send 200 requests and count who answered
+from collections import Counter
+hits = Counter(endpoint.predict(instances=[sample[NUM].iloc[0].astype(float).tolist()]).deployed_model_id
+               for _ in range(200))
+print(hits)</code></pre>
+              <figure class="shot"><div class="shot-bar"><i></i><i></i><i></i><span>Colab Enterprise · canary check</span><span class="live">REPRESENTATIVE</span></div>
+<div class="term"><span class="c">endpoint.traffic_split</span>
+{'4417730551299522560': <span class="y">90</span>, '8126645337409306624': <span class="y">10</span>}
+<span class="c">Counter of 200 requests</span>
+Counter({'4417730551299522560': <span class="p">183</span>, '8126645337409306624': <span class="p">17</span>})</div><figcaption><b>Representative output.</b> Random routing means you'll rarely see exactly 180/20.</figcaption></figure>
+              <div class="expect">Roughly a 180 / 20 split between the two deployed model IDs.</div>
+              <details class="deep"><summary>Promote or roll back</summary><div>
+<pre data-lang="python"><code class="language-python">ids = {d.display_name: d.id for d in endpoint.list_models()}
+# Promote: all traffic to challenger
+endpoint.update(traffic_split={ids["challenger"]: 100, ids["champion"]: 0})
+# Rollback: the reverse. Then move the alias in the registry so pipelines agree:
+# aiplatform.models.ModelRegistry(champ).add_version_aliases(["champion"], version=chall.version_id)</code></pre>
+              </div></details>
+            </li>
+            <li class="step">
+              <h4>Batch-score the entire customer base</h4>
+<pre data-lang="python"><code class="language-python">bq.query(f"""CREATE OR REPLACE TABLE `odyssey_d2.score_input` AS
+             SELECT user_id, {', '.join(f'CAST({c} AS FLOAT64) AS {c}' for c in NUM)}
+             FROM `odyssey_d1.churn_training`""").result()
+
+batch = champ.batch_predict(
+    job_display_name="churn-nightly-batch",
+    bigquery_source=f"bq://{PROJECT_ID}.odyssey_d2.score_input",
+    bigquery_destination_prefix=f"bq://{PROJECT_ID}.odyssey_d2",
+    instances_format="bigquery",
+    predictions_format="bigquery",
+    instance_type="array",            # send each row as [f1, f2, …] in column order
+    included_fields=NUM,              # …using only these columns, in this order
+    key_field="user_id",              # carry the ID through to the output table
+    machine_type="n2-standard-4",
+    starting_replica_count=1,
+    max_replica_count=4,
+    sync=False,
+)</code></pre>
+              <p>When it finishes, a new table <code>predictions_&lt;timestamp&gt;</code> appears in <code>odyssey_d2</code>. Query the top 20 at-risk customers.</p>
+              <div class="sidequest" data-sq="2.3-penny-pincher" data-xp="40"><div class="sq-ico">🪙</div><div><span class="sq-tag">SIDE QUEST</span><b>Penny Pincher</b><p>Work out what the endpoint costs per day at <code>min_replica_count=1</code> vs. what the batch job cost to score every customer. At what request volume does online serving start to beat a nightly batch? Bring the number to the debrief.</p></div><button type="button"></button></div>
+              <div class="callout warn"><span class="ttl">API drift check</span><p><code>instance_type</code>, <code>included_fields</code> and <code>key_field</code> map to the batch job's <code>instanceConfig</code>. If your SDK version rejects them, drop <code>key_field</code> first, or upgrade <code>google-cloud-aiplatform</code>. Batch jobs run on separate, ephemeral nodes. They never touch your endpoint.</p></div>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- SKEW -->
+    <section id="skew">
+      <div class="eyebrow">Concept · 15 min</div>
+      <h2>Training–serving skew: the silent saboteur</h2>
+      <div class="concept">
+        <div>
+          <p>Your model was trained on <code>recency_days</code> computed by a careful BigQuery query. In production, the checkout service computes it in Java, with a timezone bug and an off-by-one. The model is <em>identical</em>, its inputs aren't, and accuracy quietly drops 8 points. That's <strong>training–serving skew</strong>, and it's the reason feature stores exist.</p>
+          <p>A <strong>Feature Store</strong> gives you one definition of each feature, computed once, served two ways:</p>
+          <ul>
+            <li><strong>Offline</strong>: point-in-time-correct historical values for training (it's just BigQuery).</li>
+            <li><strong>Online</strong>: the latest value per entity, at millisecond latency, for serving.</li>
+          </ul>
+          <p>Agent Platform's current Feature Store is <strong>BigQuery-native</strong>. Your BigQuery tables or views <em>are</em> the offline store. You register them as <strong>feature groups</strong> and sync them into an <strong>online store</strong> through <strong>feature views</strong>. No more copying data into a separate system.</p>
+        </div>
+        <figure class="photo" style="margin:0"><img src="assets/img/cables.jpg" alt="Network cables patched into a switch" loading="lazy"><figcaption>One feature definition, two delivery paths. No crossed wires.</figcaption></figure>
+      </div>
+      <div class="keyterms">
+        <div class="keyterm"><b>Feature group</b><span>Registry metadata over a BigQuery source with an entity ID column and (optionally) <code>feature_timestamp</code>.</span></div>
+        <div class="keyterm"><b>Online store</b><span>Low-latency serving infra: <em>Optimized</em> (also supports embeddings/vector retrieval) or <em>Bigtable</em> (huge, cost-efficient).</span></div>
+        <div class="keyterm"><b>Feature view</b><span>A subset of features synced from BigQuery into an online store, on a schedule or on demand.</span></div>
+        <div class="keyterm"><b>Point-in-time join</b><span>For each training label at time <em>t</em>, fetch feature values as they were at <em>t</em>, never later.</span></div>
+      </div>
+    </section>
+
+    <!-- LAB 2.4 -->
+    <section id="lab-2-4">
+      <div class="lab" data-lab="2.4" data-xp="150">
+        <div class="lab-head">
+          <div class="lab-img" style="background-image:url('assets/img/data-neon.jpg')"></div>
+          <div class="lab-meta">
+            <div class="lab-id">LAB 2.4 · CORE</div>
+            <h3>Feature Store: one truth, two orbits</h3>
+            <div class="lab-stats"><span>⏱ 45 min</span><span class="stars">★★★☆☆</span><span class="xp">+150 XP</span><span>🧰 Feature Store · BigQuery · Optimized online store</span></div>
+          </div>
+        </div>
+        <div class="lab-body">
+          <p class="lab-goal">Publish the churn features as a registered feature group, sync them to an optimized online store, and fetch a customer's live feature vector in milliseconds, ready to send to your endpoint.</p>
+          <ol class="steps">
+            <li class="step">
+              <h4>Create a feature table with entity ID and timestamp</h4>
+<pre data-lang="sql"><code class="language-sql">CREATE OR REPLACE TABLE `odyssey_d2.customer_features` AS
+SELECT
+  CAST(user_id AS STRING)      AS entity_id,
+  CURRENT_TIMESTAMP()          AS feature_timestamp,
+  CAST(n_orders AS FLOAT64)     AS n_orders,
+  CAST(revenue AS FLOAT64)      AS revenue,
+  CAST(avg_item_price AS FLOAT64) AS avg_item_price,
+  CAST(return_rate AS FLOAT64)  AS return_rate,
+  CAST(n_categories AS FLOAT64) AS n_categories,
+  CAST(recency_days AS FLOAT64) AS recency_days,
+  CAST(tenure_days AS FLOAT64)  AS tenure_days,
+  CAST(age AS FLOAT64)          AS age
+FROM `odyssey_d1.churn_training`;</code></pre>
+              <p class="dim">In production this would be a scheduled query (or a Dataform pipeline) that <em>appends</em> a new snapshot daily, so the history gives you point-in-time training for free.</p>
+            </li>
+            <li class="step">
+              <h4>Register a feature group and its features</h4>
+<pre data-lang="python"><code class="language-python">from vertexai.resources.preview import feature_store
+import vertexai
+vertexai.init(project=PROJECT_ID, location=REGION)
+
+fg = feature_store.FeatureGroup.create(
+    "churn_features",
+    feature_store.utils.FeatureGroupBigQuerySource(
+        uri=f"bq://{PROJECT_ID}.odyssey_d2.customer_features",
+        entity_id_columns=["entity_id"],
+    ),
+)
+for f in NUM:
+    fg.create_feature(f)
+print([f.name for f in fg.list_features()])</code></pre>
+            </li>
+            <li class="step">
+              <h4>Create an optimized online store</h4>
+              <details class="predict"><summary>Why can't the endpoint just query BigQuery directly at request time?</summary><div><p>BigQuery is built for scanning, not for single-row lookups at a high rate. Expect <strong>hundreds of milliseconds to seconds</strong> per query, plus per-query cost. An online store keeps the <em>latest</em> feature values in a low-latency key-value layout synced from the same BigQuery source, so you get the same truth with millisecond reads.</p></div></details>
+<pre data-lang="python"><code class="language-python">store = feature_store.FeatureOnlineStore.create_optimized_store("odyssey_online")
+print(store.resource_name)   # provisioning takes a few minutes; continue when ready</code></pre>
+              <div class="callout cost"><span class="ttl">Online stores bill by the hour</span><p>Optimized and Bigtable online stores run nodes continuously. Delete the store at end of day (see cleanup). The offline side is plain BigQuery and costs storage only.</p></div>
+            </li>
+            <li class="step">
+              <h4>Create a feature view and sync it</h4>
+<pre data-lang="python"><code class="language-python">view = store.create_feature_view(
+    "churn_view",
+    feature_store.utils.FeatureViewBigQuerySource(
+        uri=f"bq://{PROJECT_ID}.odyssey_d2.customer_features",
+        entity_id_columns=["entity_id"],
+    ),
+)
+sync = view.sync()          # on-demand sync; production uses a cron sync schedule
+print(sync)</code></pre>
+              <div class="expect">In Console → Agent Platform → Feature Store → Online stores → <code>odyssey_online</code> → <code>churn_view</code>, the sync job shows <em>Succeeded</em> after a few minutes.</div>
+            </li>
+            <li class="step">
+              <h4>Fetch live features, then predict</h4>
+<pre data-lang="python"><code class="language-python">import time
+uid = str(df.user_id.iloc[0])
+t0 = time.perf_counter()
+row = view.read(key=[uid]).to_dict()
+ms = (time.perf_counter() - t0) * 1000
+feats = {f["name"]: f["value"] for f in row["features"]}
+print(f"fetched in {ms:.0f} ms →", feats)
+
+# Same features, same order as training → no skew
+vector = [float(list(feats[f].values())[0]) for f in NUM]
+print(endpoint.predict(instances=[vector]).predictions)</code></pre>
+              <figure class="shot"><div class="shot-bar"><i></i><i></i><i></i><span>Colab Enterprise · view.read()</span><span class="live">REPRESENTATIVE</span></div>
+<div class="term">fetched in <span class="y">38 ms</span> → {
+  <span class="b">'n_orders'</span>: {'int64_value': '3'},
+  <span class="b">'revenue'</span>: {'double_value': 240.5},
+  <span class="b">'recency_days'</span>: {'int64_value': '45'},
+  <span class="b">'tenure_days'</span>: {'int64_value': '400'},
+  <span class="c">… 4 more features</span>
+}
+[<span class="m">0.4127</span>]</div><figcaption><b>Representative output.</b> The exact structure depends on your SDK version (see the drift check below).</figcaption></figure>
+              <div class="callout warn"><span class="ttl">API drift check</span><p>The Feature Store Python surface has lived under <code>vertexai.resources.preview.feature_store</code> and has changed shape more than once. If <code>read()</code> returns a different structure, print it and adapt. The REST method is <code>featureViews.fetchFeatureValues</code>, and that contract is stable. Online fetch latency from a notebook includes network hops. Server-side, optimized stores serve in single-digit milliseconds.</p></div>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- LAB 2.5 -->
+    <section id="lab-2-5">
+      <div class="lab" data-lab="2.5" data-xp="120">
+        <div class="lab-head">
+          <div class="lab-img" style="background-image:url('assets/img/orion.jpg')"></div>
+          <div class="lab-meta">
+            <div class="lab-id">LAB 2.5 · CORE</div>
+            <h3>Drift Radar: Model Monitoring v2</h3>
+            <div class="lab-stats"><span>⏱ 35 min</span><span class="stars">★★★☆☆</span><span class="xp">+120 XP</span><span>🧰 Model Monitoring · BigQuery · Alerts</span></div>
+          </div>
+        </div>
+        <div class="lab-body">
+          <p class="lab-goal">Attach a model monitor to the champion with the training data as its baseline, then <em>deliberately</em> inject a drifted population, as if a marketing campaign brought in a wave of new customers, and watch the radar light up.</p>
+          <ol class="steps">
+            <li class="step">
+              <h4>Create the baseline and a drifted "production" sample</h4>
+<pre data-lang="sql"><code class="language-sql">CREATE OR REPLACE TABLE `odyssey_d2.mon_baseline` AS
+SELECT * EXCEPT (user_id) FROM `odyssey_d2.score_input`;
+
+-- A campaign brought in younger, newer, lower-spend customers
+CREATE OR REPLACE TABLE `odyssey_d2.mon_drifted` AS
+SELECT
+  n_orders, revenue * 0.35 AS revenue, avg_item_price * 0.6 AS avg_item_price,
+  return_rate, n_categories,
+  recency_days + 90 AS recency_days, tenure_days * 0.2 AS tenure_days,
+  GREATEST(18, age - 15) AS age
+FROM `odyssey_d2.score_input`
+WHERE RAND() &lt; 0.3;</code></pre>
+            </li>
+            <li class="step">
+              <h4>Define the monitor</h4>
+<pre data-lang="python"><code class="language-python">from vertexai.resources.preview import ml_monitoring as mm
+
+schema = mm.spec.ModelMonitoringSchema(
+    feature_fields=[mm.spec.FieldSchema(name=f, data_type="float") for f in NUM],
+)
+
+monitor = mm.ModelMonitor.create(
+    display_name="churn-drift-radar",
+    model_name=champ.resource_name,
+    model_version_id=champ.version_id,
+    model_monitoring_schema=schema,
+    training_dataset=mm.spec.MonitoringInput(
+        table_uri=f"bq://{PROJECT_ID}.odyssey_d2.mon_baseline"),
+    tabular_objective_spec=mm.spec.TabularObjective(
+        feature_drift_spec=mm.spec.DataDriftSpec(
+            default_numeric_alert_threshold=0.1,      # Jensen–Shannon divergence
+        )),
+    notification_spec=mm.spec.NotificationSpec(user_emails=["you@example.com"]),
+    output_spec=mm.spec.OutputSpec(gcs_base_dir=f"{BUCKET}/d2/monitoring"),
+)</code></pre>
+            </li>
+            <li class="step">
+              <h4>Run an on-demand job against the drifted data</h4>
+              <details class="predict"><summary>We shifted four features. Which will alert, and will <em>prediction</em> drift alert too?</summary><div><p>The four shifted features should breach. <strong>Prediction drift almost certainly fires too</strong>, because recency is the model's top feature. That's why prediction drift is such a cheap early-warning signal: it needs no labels.</p></div></details>
+<pre data-lang="python"><code class="language-python">run = monitor.run(
+    display_name="campaign-wave-check",
+    target_dataset=mm.spec.MonitoringInput(
+        table_uri=f"bq://{PROJECT_ID}.odyssey_d2.mon_drifted"),
+)
+# A few minutes later:
+monitor.show_feature_drift_stats(model_monitoring_job_name=run.name)</code></pre>
+              <figure class="shot"><div class="shot-bar"><i></i><i></i><i></i><span>Model Monitoring · campaign-wave-check</span><span class="live">REPRESENTATIVE</span></div>
+<div class="term"><span class="c">feature          metric           score    threshold   status</span>
+recency_days     jensen_shannon   <span class="m">0.412</span>    0.10        <span class="m">⚠ ANOMALY</span>
+revenue          jensen_shannon   <span class="m">0.287</span>    0.10        <span class="m">⚠ ANOMALY</span>
+tenure_days      jensen_shannon   <span class="m">0.198</span>    0.10        <span class="m">⚠ ANOMALY</span>
+age              jensen_shannon   <span class="m">0.133</span>    0.10        <span class="m">⚠ ANOMALY</span>
+return_rate      jensen_shannon   0.012    0.10        <span class="p">✓ ok</span>
+n_categories     jensen_shannon   0.009    0.10        <span class="p">✓ ok</span>
+<span class="w">churn_prob (prediction)  jensen_shannon   </span><span class="m">0.301    ⚠ ANOMALY</span></div><figcaption><b>Illustrative drift report.</b> Scores depend on how you shifted the data.</figcaption></figure>
+              <div class="expect"><code>recency_days</code>, <code>revenue</code>, <code>tenure_days</code> and <code>age</code> breach the threshold, and an alert email lands in your inbox. <code>return_rate</code> and <code>n_categories</code> stay calm because we didn't touch them.</div>
+            </li>
+            <li class="step">
+              <h4>Put it on a schedule against live traffic</h4>
+<pre data-lang="python"><code class="language-python">monitor.create_schedule(
+    display_name="churn-hourly-radar",
+    cron="0 * * * *",                                  # hourly
+    target_dataset=mm.spec.MonitoringInput(
+        table_uri=f"bq://{PROJECT_ID}.odyssey_d2.endpoint_logs"),   # from Lab 2.3 logging
+)</code></pre>
+              <div class="callout warn"><span class="ttl">API drift check</span><p>Model Monitoring v2 shipped in <code>vertexai.resources.preview.ml_monitoring</code>. Argument names such as the data-drift spec fields and how endpoint logs are parsed may differ in your SDK version. If a call fails, open <strong>Console → Agent Platform → Monitoring</strong> and build the same monitor in the UI. The concepts (baseline, target, objective, threshold, schedule, notification) map one to one.</p></div>
+            </li>
+          </ol>
+          <div class="sidequest" data-sq="2.5-threshold-tuner" data-xp="50"><div class="sq-ico">🎚️</div><div><span class="sq-tag">SIDE QUEST</span><b>Threshold Tuner</b><p>Generate a <em>tiny</em> shift (+5% on <code>revenue</code> only) and find the lowest threshold that still catches it without flagging any untouched feature. You've just done the alert-fatigue trade-off every on-call team argues about.</p></div><button type="button"></button></div>
+          <details class="deep"><summary>Which drift metric, and what threshold?</summary><div>
+            <p>Numeric features default to <strong>Jensen–Shannon divergence</strong>; categoricals to <strong>L-infinity distance</strong>. 0.1 is a reasonable starting threshold, but tune it per feature: alert fatigue kills monitoring programs faster than missed drift. Prediction drift (output distribution shift) is often the earliest, cheapest signal because it needs no ground-truth labels.</p>
+          </div></details>
+        </div>
+      </div>
+    </section>
+
+    <!-- LAB 2.6 -->
+    <section id="lab-2-6">
+      <div class="lab" data-lab="2.6" data-xp="120">
+        <div class="lab-head">
+          <div class="lab-img" style="background-image:url('assets/img/code-colorful.jpg')"></div>
+          <div class="lab-meta">
+            <div class="lab-id">LAB 2.6 · ADVANCED</div>
+            <h3>Autopilot: CI/CD for pipelines with Cloud Build</h3>
+            <div class="lab-stats"><span>⏱ 40 min</span><span class="stars">★★★★☆</span><span class="xp">+120 XP</span><span>🧰 Cloud Build · Artifact Registry (KFP) · Git</span></div>
+          </div>
+        </div>
+        <div class="lab-body">
+          <p class="lab-goal">Reach Level 2: every push to <code>main</code> tests your pipeline code, compiles it, publishes a versioned template to Artifact Registry and launches a run, with no human at the keyboard.</p>
+          <ol class="steps">
+            <li class="step">
+              <h4>Lay out the repo</h4>
+<pre data-lang="bash"><code class="language-bash">churn-odyssey/
+├── pipelines/
+│   ├── components.py      # extract, train, evaluate, register (from Lab 2.2)
+│   ├── pipeline.py        # @dsl.pipeline churn_pipeline
+│   ├── compile.py         # compiler.Compiler().compile(...)
+│   └── submit.py          # aiplatform.PipelineJob(...).submit()
+├── tests/
+│   └── test_components.py # unit tests on component python_func
+├── requirements.txt       # kfp, google-cloud-pipeline-components, google-cloud-aiplatform, pytest
+└── cloudbuild.yaml</code></pre>
+              <p class="dim">Tip: KFP lets you unit-test component logic directly: <code>extract.python_func(...)</code> calls the undecorated function.</p>
+            </li>
+            <li class="step">
+              <h4>Create a KFP repository in Artifact Registry</h4>
+<pre data-lang="bash"><code class="language-bash">gcloud artifacts repositories create odyssey-pipelines \
+  --repository-format=KFP --location=us-central1 \
+  --description="AI Odyssey pipeline templates"
+
+# Let Cloud Build's service account run pipelines and push templates
+CB_SA="$(gcloud projects describe $PROJECT_ID --format='value(projectNumber)')@cloudbuild.gserviceaccount.com"
+for ROLE in roles/aiplatform.user roles/artifactregistry.writer roles/iam.serviceAccountUser; do
+  gcloud projects add-iam-policy-binding $PROJECT_ID --member="serviceAccount:$CB_SA" --role=$ROLE --quiet
+done</code></pre>
+              <div class="callout info"><span class="ttl">Which service account?</span><p>Newer projects may run builds as the Compute Engine default SA or a user-specified SA instead of the legacy <code>@cloudbuild</code> account. Check <strong>Cloud Build → Settings</strong> and grant the roles to whichever account your trigger uses.</p></div>
+            </li>
+            <li class="step">
+              <h4>Write cloudbuild.yaml</h4>
+<pre data-lang="yaml"><code class="language-yaml">substitutions:
+  _REGION: us-central1
+  _REPO: odyssey-pipelines
+
+steps:
+  - id: unit-tests
+    name: python:3.11
+    entrypoint: bash
+    args: ["-c", "pip install -q -r requirements.txt &amp;&amp; pytest -q tests/"]
+
+  - id: compile-and-publish
+    name: python:3.11
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        pip install -q -r requirements.txt
+        python pipelines/compile.py --out churn_pipeline.yaml
+        python - &lt;&lt;'EOF'
+        from kfp.registry import RegistryClient
+        c = RegistryClient(host="https://${_REGION}-kfp.pkg.dev/${PROJECT_ID}/${_REPO}")
+        name, version = c.upload_pipeline(file_name="churn_pipeline.yaml",
+                                          tags=["${SHORT_SHA}", "latest"])
+        print("published", name, version)
+        EOF
+
+  - id: launch-run
+    name: python:3.11
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        pip install -q google-cloud-aiplatform
+        python pipelines/submit.py \
+          --template "https://${_REGION}-kfp.pkg.dev/${PROJECT_ID}/${_REPO}/churn-odyssey-pipeline/${SHORT_SHA}" \
+          --project "${PROJECT_ID}" --region "${_REGION}"
+
+options:
+  logging: CLOUD_LOGGING_ONLY</code></pre>
+<pre data-lang="python"><code class="language-python"># pipelines/submit.py
+import argparse
+from google.cloud import aiplatform
+p = argparse.ArgumentParser()
+p.add_argument("--template"); p.add_argument("--project"); p.add_argument("--region")
+a = p.parse_args()
+aiplatform.init(project=a.project, location=a.region)
+aiplatform.PipelineJob(
+    display_name="churn-odyssey-ci",
+    template_path=a.template,                 # an Artifact Registry URL works here
+    pipeline_root=f"gs://{a.project}-odyssey/d2/pipeline_root",
+    parameter_values={"project": a.project},
+    enable_caching=False,                     # CI runs should always use fresh data
+).submit()</code></pre>
+            </li>
+            <li class="step">
+              <h4>Run it by hand once, then wire a trigger</h4>
+              <details class="predict"><summary>If a unit test fails, what happens to the Artifact Registry template and the pipeline run?</summary><div><p><strong>Neither happens.</strong> Cloud Build runs steps in order and stops at the first failure. No template is published and no run is submitted, so a broken pipeline never reaches orbit. You'll prove it in the next step.</p></div></details>
+<pre data-lang="bash"><code class="language-bash"># Manual run from the repo root (SHORT_SHA must be supplied manually)
+gcloud builds submit --config=cloudbuild.yaml --substitutions=SHORT_SHA=manual01 .
+
+# Trigger on every push to main (connect your GitHub repo in Cloud Build first)
+gcloud builds triggers create github \
+  --name=churn-pipeline-ci \
+  --repo-owner=YOUR_GITHUB_USER --repo-name=churn-odyssey \
+  --branch-pattern='^main$' \
+  --build-config=cloudbuild.yaml --region=us-central1</code></pre>
+              <figure class="shot"><div class="shot-bar"><i></i><i></i><i></i><span>Cloud Build · build log</span><span class="live">REPRESENTATIVE</span></div>
+<div class="term"><span class="c">BUILD</span>
+<span class="b">Starting Step #0 - "unit-tests"</span>
+Step #0: ........                                    [100%]
+Step #0: <span class="p">8 passed in 2.41s</span>
+<span class="b">Starting Step #1 - "compile-and-upload"</span>
+Step #1: Compiled churn_pipeline.yaml
+Step #1: Uploaded template: churn-odyssey-pipeline <span class="y">sha256:3f9c…</span> tags=[latest, a1b2c3d]
+<span class="b">Starting Step #2 - "submit-run"</span>
+Step #2: PipelineJob created: churn-odyssey-a1b2c3d
+<span class="w">DONE</span> · <span class="p">SUCCESS</span> · duration 1m 48s</div><figcaption><b>Representative build log.</b> Step names match the cloudbuild.yaml above.</figcaption></figure>
+              <div class="expect">Cloud Build history shows three green steps. Artifact Registry shows <code>churn-odyssey-pipeline</code> with <code>latest</code> and SHA tags, and a new pipeline run appears in Agent Platform → Pipelines.</div>
+              <details class="hint"><summary>Prefer GitHub Actions?</summary><div><p>Use <strong>Workload Identity Federation</strong> (<code>google-github-actions/auth</code>) so GitHub gets short-lived tokens with no service-account keys in secrets. The steps are the same: test → compile → <code>upload_pipeline</code> → <code>PipelineJob.submit()</code>. Second-gen Cloud Build repository connections use <code>--repository=projects/…/connections/…/repositories/…</code> instead of <code>--repo-owner/--repo-name</code>.</p></div></details>
+            </li>
+            <li class="step">
+              <h4>Prove it: break a test, then fix it</h4>
+              <p>Commit a change that makes <code>test_components.py</code> fail. The build must stop at <strong>unit-tests</strong>, with no template published and no run launched. Fix it, push again and watch the full chain go green. That's the safety net that makes Level 2 work.</p>
+            </li>
+          </ol>
+          <div class="sidequest" data-sq="2.6-gatekeeper" data-xp="60"><div class="sq-ico">🚦</div><div><span class="sq-tag">SIDE QUEST</span><b>Gatekeeper</b><p>Add a fourth Cloud Build step that fails the build if the compiled pipeline YAML doesn't contain your AUC gate (<code>grep -q auc-gate churn_pipeline.yaml</code>). You've just written a policy-as-code check: nobody can quietly delete the safety gate.</p></div><button type="button"></button></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ACCELERATORS -->
+    <section id="accel">
+      <div class="eyebrow">Concept · 15 min</div>
+      <h2>Accelerators &amp; cost guardrails in 2026</h2>
+      <div class="concept">
+        <div>
+          <p>Today's XGBoost runs happily on CPUs. Tomorrow's workloads, like tuning Gemini, serving Gemma 4 or training custom vision models, need accelerators. Here's the 2026 landscape at a glance:</p>
+          <ul>
+            <li><strong>Cloud TPU, Ironwood generation</strong>: Google's 7th-gen TPU, designed primarily for large-scale <em>inference</em> and serving of thinking models, alongside the Trillium (v6e) generation for training and serving.</li>
+            <li><strong>NVIDIA GPUs</strong>: Blackwell-class (A4 / A4X VMs) for frontier training, H100/H200 (A3) for heavy fine-tuning, and L4 (G2, and Cloud Run GPUs) for cost-efficient inference.</li>
+            <li><strong>Dynamic Workload Scheduler</strong>: <em>Flex-start</em> queues your job until the capacity you need is available, at a discount, which suits training jobs that can wait an hour. <em>Calendar mode</em> reserves capacity for a fixed window.</li>
+            <li><strong>Ray on Agent Platform</strong>: managed Ray clusters for distributed Python (data prep, hyperparameter sweeps, RL) when KFP steps aren't the right abstraction.</li>
+          </ul>
+        </div>
+        <figure class="photo" style="margin:0"><img src="assets/img/circuit.jpg" alt="Close-up of a circuit board with chips" loading="lazy"><figcaption>Match the chip to the job. A TPU pod for XGBoost is a rocket to the corner store.</figcaption></figure>
+      </div>
+      <div class="table-wrap"><table>
+        <tr><th>Guardrail</th><th>How</th><th>Why it matters</th></tr>
+        <tr><td>Budget alerts</td><td>Billing → Budgets at 50 / 90 / 100%, routed to email and Pub/Sub</td><td>The only thing that catches the endpoint you forgot on Friday</td></tr>
+        <tr><td>Labels everywhere</td><td><code>labels={"team": …, "world": "luna"}</code> on models, jobs and endpoints</td><td>Cost breakdown by team and project in the billing export</td></tr>
+        <tr><td>Scale-to-zero thinking</td><td>Batch over online when latency allows; undeploy idle endpoints</td><td>Idle online nodes are the #1 MLOps cost leak</td></tr>
+        <tr><td>Pipeline caching</td><td><code>enable_caching=True</code> for deterministic steps</td><td>Reruns skip expensive training when nothing changed</td></tr>
+        <tr><td>Quotas</td><td>IAM &amp; Admin → Quotas: cap GPU/TPU per region</td><td>A typo in <code>max_replica_count</code> can't become a 100-GPU bill</td></tr>
+      </table></div>
+      <div class="callout info"><span class="ttl">Verify before you reserve</span><p>Accelerator generations, VM families and regional availability change quarterly. Check the current Cloud TPU and GPU pages for your region before planning capacity. The <em>patterns</em> here (flex-start for patient jobs, reservations for launches, batch over online) are what stay stable.</p></div>
+    </section>
+
+    <!-- BOSS -->
+    <section id="boss">
+      <div class="boss" data-boss="d2" data-xp="300">
+        <div class="bg" style="background-image:url('assets/img/light-tunnel.jpg')"></div>
+        <div class="boss-inner">
+          <div class="boss-label">BOSS BATTLE · DAY 2</div>
+          <h3>🌊 The Drift Leviathan</h3>
+          <p>A tidal wave of new customers is rolling in from a viral campaign, and the Leviathan feeds on stale models. Build a system that <strong>notices the drift, retrains, proves the new model is better and canaries it out</strong>, all without a human touching a notebook. You have <strong>30 minutes</strong>, and teams demo at the end.</p>
+          <div class="hp"><span></span></div>
+          <h4>Victory conditions (check each to deal damage)</h4>
+          <ul class="criteria">
+            <li>Your pipeline starts with a <strong>drift-check step</strong> (read the latest monitoring result <em>or</em> compute a PSI/JS score in BigQuery) and <strong>skips retraining</strong> when drift is below threshold.</li>
+            <li>When drift is detected, it retrains on fresh data and registers a new version aliased <code>challenger</code>, with lineage back to the data snapshot.</li>
+            <li>A second <code>dsl.If</code> gate deploys the challenger as a <strong>10% canary</strong> only if its AUC ≥ champion AUC − 0.005 on the <em>same</em> holdout.</li>
+            <li>The pipeline runs <strong>automatically</strong>, either on a schedule (<code>job.create_schedule(cron=…)</code>) or through your Cloud Build trigger.</li>
+            <li>Live demo: load <code>mon_drifted</code>, trigger the pipeline and show the canary appear in <code>endpoint.traffic_split</code>, plus a written <strong>one-line rollback command</strong>.</li>
+          </ul>
+          <details class="hint" style="background:rgba(0,0,0,.25)"><summary>Leviathan-taming hints</summary><div>
+            <ul>
+              <li>PSI in SQL: bucket a feature with <code>NTILE(10)</code> on the baseline, apply the same cut points to the target, then <code>SUM((t - b) * LN(t / b))</code>. PSI &gt; 0.2 is classic "significant drift".</li>
+              <li>Have the drift-check component <em>return</em> a float, then <code>with dsl.If(drift.output &gt; 0.2):</code> wraps the whole retrain branch.</li>
+              <li>Load the champion via <code>aiplatform.Model(f"{name}@champion")</code> inside a component to score it on the new holdout.</li>
+              <li><code>aiplatform.PipelineJob(...).create_schedule(display_name="leviathan-watch", cron="*/30 * * * *")</code> handles the scheduling.</li>
+            </ul>
+          </div></details>
+        </div>
+      </div>
+    </section>
+
+    <!-- QUIZ -->
+    <section id="quiz">
+      <div class="quiz" data-quiz="d2">
+        <div class="quiz-head"><h3>📡 Debrief quiz</h3><span class="quiz-score"></span></div>
+        <div class="q"><p>1. Your team retrains by running a notebook every month, but deployments go through a reviewed pipeline with lineage. Which MLOps level best describes you?</p><div class="opts">
+          <button>Level 2: fully automated CI/CD</button>
+          <button data-correct>Level 0 for training: retraining is manual, even if deployment is tidy</button>
+          <button>Level 1: pipeline automation</button>
+          <button>Maturity levels don't apply to tabular models</button></div>
+          <div class="why">Level 1 requires <em>continuous training</em>: the training itself runs as an automated pipeline. A monthly notebook is manual, whatever happens downstream.</div></div>
+        <div class="q"><p>2. In KFP v2, what's the right way to register a model only when evaluation AUC clears a threshold?</p><div class="opts">
+          <button>Raise an exception in the evaluate step when AUC is low</button>
+          <button data-correct>Return AUC from the evaluate component and wrap the register step in <code>dsl.If(auc &gt;= threshold)</code></button>
+          <button>Check AUC in the notebook after the run and register manually</button>
+          <button>Use <code>enable_caching=False</code></button></div>
+          <div class="why"><code>dsl.If</code> (formerly <code>dsl.Condition</code>) evaluates at runtime and skips the branch cleanly. An exception would mark the run as <em>failed</em>, which is the wrong signal for "model not good enough".</div></div>
+        <div class="q"><p>3. You deploy a challenger with <code>traffic_percentage=10</code> to an endpoint already serving the champion at 100%. What happens?</p><div class="opts">
+          <button>The deploy fails because traffic exceeds 100%</button>
+          <button>Both models get 100% (shadow mode)</button>
+          <button data-correct>The champion is scaled down to 90% automatically: a canary</button>
+          <button>The challenger gets 10 requests total, then stops</button></div>
+          <div class="why">The SDK rebalances existing deployed models proportionally so the split sums to 100. Promotion and rollback are just <code>endpoint.update(traffic_split=…)</code>.</div></div>
+        <div class="q"><p>4. Offline AUC is 0.83 but production performance is far worse, and the model artifact is identical. The most likely culprit?</p><div class="opts">
+          <button>The endpoint machine type is too small</button>
+          <button data-correct>Training–serving skew: production computes features differently than training did</button>
+          <button>Model Registry corrupted the model</button>
+          <button>Batch prediction and online prediction use different algorithms</button></div>
+          <div class="why">Same model with different inputs gives different results. A single feature definition (Feature Store, or BQML <code>TRANSFORM</code>) served to both training and inference prevents it.</div></div>
+        <div class="q"><p>5. When should you <em>disable</em> pipeline caching for a step?</p><div class="opts">
+          <button>Never, because caching is always safe</button>
+          <button>Only for GPU steps</button>
+          <button data-correct>When the step reads mutable external state (e.g., a BigQuery table that gets new data) and its parameters don't change</button>
+          <button>Only for the final deploy step</button></div>
+          <div class="why">The cache key is the step's inputs and code. If the <em>data behind</em> a constant table name changes, the cache happily returns stale results. Disable caching or pass a date parameter.</div></div>
+      </div>
+
+      <div class="callout warn"><span class="ttl">🧹 End-of-day cleanup (critical today!)</span><p>Endpoints and online stores bill by the hour. Undeploy and delete them before you leave. Keep the models in the registry (storage only, nearly free) and <code>odyssey_d2</code> tables, because Day 5 evaluates against them.</p>
+<pre data-lang="python"><code class="language-python">ep = aiplatform.Endpoint.list(filter='display_name="churn-endpoint"')
+for e in ep:
+    e.undeploy_all()
+    e.delete()
+
+store.delete(force=True)                 # online store + feature views
+for s in mm.ModelMonitor.list():         # stop scheduled monitoring jobs
+    for sch in s.list_schedules():
+        s.delete_schedule(sch.name)
+# Paused pipeline schedules: Console → Pipelines → Schedules</code></pre></div>
+
+      <a class="next-mission" href="day3.html" style="--pglow:rgba(255,183,3,.3)">
+        <div class="planet" style="background-image:url('assets/img/jupiter.jpg');background-size:210%;background-position:42% 50%;--pcolor:#ffb703"></div>
+        <div><div class="eyebrow">Next mission · Day 3</div><h3>Jupiter: <span class="grad-sun">The Gemini Giant</span></h3>
+        <p>Your predictions now run in production. Tomorrow you make them speak: Gemini 4 writes win-back emails for every at-risk customer, reads invoices and video, cites the live web and paints product imagery, all through the same platform you just learned to run.</p>
+        <span class="btn btn-ghost" style="padding:10px 20px">Set course for Jupiter →</span></div>
+      </a>
+      <div class="pager">
+        <a href="day1.html"><small>← Previous world</small><b>Day 1 · Terra</b></a>
+        <a class="next" href="day3.html"><small>Next world →</small><b>Day 3 · Jupiter: The Gemini Giant</b></a>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+<script src="assets/js/main.js?v=2"></script>
+</body>
+</html>

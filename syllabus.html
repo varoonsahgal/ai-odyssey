@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flight Plan — Syllabus | AI Odyssey</title>
+<meta name="description" content="The complete plan for AI Odyssey, a 5-day advanced AI on Google Cloud course: outcomes, daily schedule, labs, assessment, instructor runbook, cost model and adaptations.">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css?v=2">
+</head>
+<body data-page="syllabus">
+
+<header class="hero day-hero" style="min-height:70vh">
+  <div class="hero-bg" style="background-image:url('assets/img/sky-purple.jpg')"></div>
+  <canvas class="starfield"></canvas>
+  <div class="wrap">
+    <div class="day-num">MISSION DOSSIER</div>
+    <h1>The <span class="grad-text">Flight Plan</span></h1>
+    <p class="lead">The full plan for a one-week advanced AI course on Google Cloud: what learners will be able to do, how every hour is spent, how progress is measured, and how to run it without surprises.</p>
+  </div>
+</header>
+
+<!-- AT A GLANCE -->
+<section class="section">
+  <div class="wrap">
+    <div class="grid g3">
+      <div class="card reveal"><div class="icon">🗓️</div><h4>Format</h4><p class="dim">5 days × 8 hours (09:00–17:00), in person or live virtual. About 70% hands-on. Teams of 2–3 for boss battles and the capstone.</p></div>
+      <div class="card reveal"><div class="icon">🎯</div><h4>Audience</h4><p class="dim">Data scientists, ML engineers and software engineers moving into AI. Comfortable with Python and SQL, and familiar with basic ML concepts.</p></div>
+      <div class="card reveal"><div class="icon">🧰</div><h4>Platform</h4><p class="dim">Google Cloud, specifically BigQuery and Gemini Enterprise Agent Platform (formerly Vertex AI), with Cloud Run, Cloud Build and Model Armor.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- OUTCOMES -->
+<section class="section" style="padding-top:20px">
+  <div class="wrap split">
+    <div class="reveal">
+      <div class="eyebrow">Learning outcomes</div>
+      <h2>By Friday, every learner can…</h2>
+      <ol>
+        <li><strong>Select</strong> the right technique for a problem (boosted trees, forecasting, clustering, LLM prompting, RAG, agents or fine-tuning) and justify it on cost, latency, accuracy and explainability.</li>
+        <li><strong>Build and explain</strong> classical models in BigQuery ML, including leakage-free feature engineering and Shapley explanations.</li>
+        <li><strong>Forecast</strong> with ARIMA_PLUS and the TimesFM foundation model, and decide between them with a backtest.</li>
+        <li><strong>Operationalize</strong> models with pipelines, experiment tracking, a registry, endpoints, a feature store, monitoring and CI/CD.</li>
+        <li><strong>Engineer</strong> Gemini applications with structured output, multimodal inputs, function calling, grounding and context caching.</li>
+        <li><strong>Generate</strong> images and video responsibly with Nano Banana and Veo/Omni models.</li>
+        <li><strong>Retrieve</strong> knowledge with embeddings, BigQuery vector search and RAG Engine.</li>
+        <li><strong>Build multi-agent systems</strong> with ADK 2.0, connect them to tools over MCP and to each other over A2A, and deploy them to Agent Runtime with Memory Bank.</li>
+        <li><strong>Tune</strong> Gemini with supervised fine-tuning and <strong>self-host</strong> Gemma 4 on Cloud Run GPUs with vLLM.</li>
+        <li><strong>Evaluate</strong> generative and agentic systems with autoraters, rubrics and trajectory metrics.</li>
+        <li><strong>Defend</strong> AI systems with Model Armor, least-privilege identities and red-teaming.</li>
+        <li><strong>Engineer cost</strong> with model routing, caching, batch inference and budgets.</li>
+      </ol>
+    </div>
+    <figure class="photo reveal" style="margin:0"><img src="assets/img/blueprint.jpg" alt="Engineer sketching blueprints" loading="lazy"><figcaption>Outcomes first, then labs designed backwards from them.</figcaption></figure>
+  </div>
+</section>
+
+<!-- LEARNING ARC -->
+<section class="section-tight">
+  <div class="wrap">
+    <div class="reveal"><div class="eyebrow">The learning arc</div><h2>One dataset, five layers of capability</h2>
+    <p class="lead">The same e-commerce world (<code>thelook_ecommerce</code>) runs through the whole week, so each day builds on the last instead of starting from scratch.</p></div>
+    <figure class="diagram reveal">
+      <svg viewBox="0 0 1000 360" role="img" aria-label="Learning arc: five days ascending from classical ML to production AI, with the thelook dataset as a continuous thread">
+        <defs>
+          <linearGradient id="arc" x1="0" x2="1"><stop offset="0" stop-color="#2ee6a6"/><stop offset=".25" stop-color="#4cc9f0"/><stop offset=".5" stop-color="#ffb703"/><stop offset=".75" stop-color="#8b6cff"/><stop offset="1" stop-color="#ff4d6d"/></linearGradient>
+          <filter id="arcglow"><feGaussianBlur stdDeviation="6"/></filter>
+        </defs>
+        <path d="M60 300 C 250 290, 330 220, 420 190 S 700 90, 940 50" stroke="url(#arc)" stroke-width="10" fill="none" filter="url(#arcglow)" opacity=".6"/>
+        <path d="M60 300 C 250 290, 330 220, 420 190 S 700 90, 940 50" stroke="url(#arc)" stroke-width="4" fill="none"/>
+        <g font-size="14" text-anchor="middle">
+          <circle cx="100" cy="298" r="16" fill="#2ee6a6"/><text x="100" y="303" fill="#032" font-weight="700">1</text>
+          <text x="100" y="336" fill="#fff" font-weight="700">Terra</text><text x="100" y="354" fill="#aab2d9" font-size="12">predict &amp; explain</text>
+          <circle cx="300" cy="255" r="16" fill="#4cc9f0"/><text x="300" y="260" fill="#032" font-weight="700">2</text>
+          <text x="300" y="293" fill="#fff" font-weight="700">Luna</text><text x="300" y="311" fill="#aab2d9" font-size="12">operationalize</text>
+          <circle cx="500" cy="165" r="16" fill="#ffb703"/><text x="500" y="170" fill="#320" font-weight="700">3</text>
+          <text x="500" y="203" fill="#fff" font-weight="700">Jupiter</text><text x="500" y="221" fill="#aab2d9" font-size="12">generate &amp; perceive</text>
+          <circle cx="710" cy="105" r="16" fill="#8b6cff"/><text x="710" y="110" fill="#fff" font-weight="700">4</text>
+          <text x="710" y="143" fill="#fff" font-weight="700">Saturn</text><text x="710" y="161" fill="#aab2d9" font-size="12">retrieve &amp; act</text>
+          <circle cx="920" cy="54" r="16" fill="#ff4d6d"/><text x="920" y="59" fill="#fff" font-weight="700">5</text>
+          <text x="900" y="92" fill="#fff" font-weight="700">Mars</text><text x="900" y="110" fill="#aab2d9" font-size="12">tune, evaluate, defend</text>
+        </g>
+        <g font-family="JetBrains Mono, monospace" font-size="11" fill="#7680ad">
+          <text x="60" y="30">THREAD: thelook_ecommerce</text>
+          <text x="60" y="50">churn scores → retention emails → support agent → evaluated &amp; armored agent</text>
+        </g>
+      </svg>
+      <figcaption>Fig 0.1 · Each day adds a layer on top of the previous day's artifacts.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- WEEK AT A GLANCE -->
+<section class="section">
+  <div class="wrap">
+    <div class="reveal"><div class="eyebrow">Week at a glance</div><h2>The itinerary</h2></div>
+    <div class="table-wrap reveal" style="margin-top:20px"><table>
+      <tr><th>Day</th><th>World · Theme</th><th>Labs</th><th>Boss battle</th><th>Key services</th></tr>
+      <tr><td><b style="color:#2ee6a6">1</b></td><td><a href="day1.html"><b>Terra</b></a> · Classical ML at Planet Scale</td><td>1.1 BQML Blitz · 1.2 Churn Prophecy · 1.3 Time Travelers · 1.4 Constellations · 1.5 DataFrames at Scale · 1.6 Hyperdrive Tuning</td><td>🐙 Churn Kraken</td><td>BigQuery ML, TimesFM, bigframes, Colab Enterprise, Training, Vizier</td></tr>
+      <tr><td><b style="color:#4cc9f0">2</b></td><td><a href="day2.html"><b>Luna</b></a> · Orbit Ops: MLOps &amp; Production</td><td>2.1 Experiments &amp; Registry · 2.2 Pipeline Forge · 2.3 Endpoint Launch · 2.4 Feature Store · 2.5 Model Monitoring · 2.6 CI/CD</td><td>🌊 Drift Leviathan</td><td>Pipelines (KFP v2), Experiments, Model Registry, Endpoints, Feature Store, Monitoring, Cloud Build</td></tr>
+      <tr><td><b style="color:#ffb703">3</b></td><td><a href="day3.html"><b>Jupiter</b></a> · The Gemini Giant: Generative &amp; Multimodal AI</td><td>3.1 First Contact · 3.2 Structured Extraction · 3.3 Multimodal Eyes &amp; Ears · 3.4 Tools &amp; Grounding · 3.5 Creative Studio · 3.6 Gen AI in BigQuery</td><td>🐉 Hallucination Hydra</td><td>Gemini 4 Argon, 3.8 Flash, Flash-Lite, Nano Banana, Veo/Omni, context caching, grounding, AI.GENERATE</td></tr>
+      <tr><td><b style="color:#8b6cff">4</b></td><td><a href="day4.html"><b>Saturn</b></a> · Rings of Agents: RAG, Agents &amp; Protocols</td><td>4.1 Vector Voyage · 4.2 RAG Engine · 4.3 Agent Ignition · 4.4 Agent Crew · 4.5 Plug into MCP · 4.6 Deploy, Remember &amp; Talk</td><td>🐝 The Swarm</td><td>Embeddings, Vector Search, RAG Engine, ADK 2.0, MCP Toolbox, Agent Runtime, Memory Bank, A2A</td></tr>
+      <tr><td><b style="color:#ff4d6d">5</b></td><td><a href="day5.html"><b>Mars</b></a> · The Red Frontier: Tune, Evaluate, Defend, Scale</td><td>5.1 Tune a Gemini · 5.2 Open Model Ops · 5.3 Evaluation Arena · 5.4 Red Team &amp; Shields · 5.5 Cost &amp; Scale Optimizer</td><td>🔴 Red Frontier + 🚀 Capstone</td><td>Supervised tuning, Gemma 4, Cloud Run GPUs, vLLM, Gen AI Evaluation, Model Armor, Cloud Trace</td></tr>
+    </table></div>
+  </div>
+</section>
+
+<!-- DAILY RHYTHM -->
+<section class="banner">
+  <div class="bg" style="background-image:url('assets/img/orion.jpg')"></div>
+  <div class="wrap">
+    <div class="eyebrow">The daily rhythm</div>
+    <blockquote>Briefing (20 min) → Lab (45–70 min) → repeat ×3 → Boss battle (30 min) → Debrief quiz (10 min)</blockquote>
+    <cite>Attention resets every ~20 minutes, so concepts stay short and the build time stays long.</cite>
+  </div>
+</section>
+
+<!-- DAILY DETAIL -->
+<section class="section">
+  <div class="wrap">
+    <div class="reveal"><div class="eyebrow">Day by day</div><h2>Detailed module plan</h2></div>
+    <div class="grid g2" style="margin-top:28px">
+      <div class="card img-card reveal"><div class="img" style="background-image:url('assets/img/earth-iss.jpg')"></div><div class="body">
+        <span class="tag green">Day 1 · Terra</span><h3>Classical ML at Planet Scale</h3>
+        <ul class="dim">
+          <li><b>AM:</b> Course kickoff and the 2026 landscape. The classical ML map (choosing model families). Where ML runs on GCP. BQML fundamentals. Metrics under imbalance and leakage.</li>
+          <li><b>PM:</b> Forecasting theory (decomposition vs. foundation models). Unsupervised segmentation. Scaling with bigframes. Custom training and Bayesian HP tuning.</li>
+          <li><b>Artifacts:</b> <code>churn_training</code>, <code>churn_xgb</code>, <code>churn_explained</code>, daily sales forecasts, segment table, tuned XGBoost model.</li>
+        </ul><a href="day1.html">Open Day 1 →</a></div></div>
+      <div class="card img-card reveal"><div class="img" style="background-image:url('assets/img/satellite.jpg')"></div><div class="body">
+        <span class="tag">Day 2 · Luna</span><h3>Orbit Ops: MLOps &amp; Production</h3>
+        <ul class="dim">
+          <li><b>AM:</b> MLOps maturity levels. Experiment tracking. Model Registry with aliases. Pipeline anatomy (components, artifacts, lineage, caching). Build the KFP pipeline.</li>
+          <li><b>PM:</b> Serving patterns (online, batch, canary, shadow). Feature Store and training/serving skew. Drift monitoring. CI/CD with Cloud Build. Accelerators in 2026 (TPU, GPU, flex-start).</li>
+          <li><b>Artifacts:</b> compiled pipeline, deployed endpoint with canary, feature view, monitoring job, build trigger.</li>
+        </ul><a href="day2.html">Open Day 2 →</a></div></div>
+      <div class="card img-card reveal"><div class="img" style="background-image:url('assets/img/nebula-bubble.jpg')"></div><div class="body">
+        <span class="tag amber">Day 3 · Jupiter</span><h3>The Gemini Giant</h3>
+        <ul class="dim">
+          <li><b>AM:</b> How LLMs work in 2026 (tokens, MoE, thinking levels). Model selection. The google-genai SDK. Structured output with schemas. Multimodal understanding. Long context and caching.</li>
+          <li><b>PM:</b> Function calling, grounding with Search, URL context, code execution. Image and video generation with SynthID. Gemini inside BigQuery for row-wise generation at scale.</li>
+          <li><b>Artifacts:</b> extraction pipeline, grounded assistant, product image set, win-back emails for at-risk customers.</li>
+        </ul><a href="day3.html">Open Day 3 →</a></div></div>
+      <div class="card img-card reveal"><div class="img" style="background-image:url('assets/img/galaxy-purple.jpg')"></div><div class="body">
+        <span class="tag violet">Day 4 · Saturn</span><h3>Rings of Agents</h3>
+        <ul class="dim">
+          <li><b>AM:</b> Embeddings and vector geometry. BigQuery vector search. Hand-rolled RAG vs. RAG Engine. What an agent is. Your first ADK agent with tools and the dev UI.</li>
+          <li><b>PM:</b> Multi-agent orchestration (sequential, parallel, loop, coordinator). MCP (tools) vs. A2A (peers). Deploy to Agent Runtime with Memory Bank. Agent identity and governance.</li>
+          <li><b>Artifacts:</b> semantic product search, RAG corpus, multi-agent concierge deployed and reachable via A2A.</li>
+        </ul><a href="day4.html">Open Day 4 →</a></div></div>
+      <div class="card img-card reveal"><div class="img" style="background-image:url('assets/img/astronaut.jpg')"></div><div class="body">
+        <span class="tag magenta">Day 5 · Mars</span><h3>The Red Frontier</h3>
+        <ul class="dim">
+          <li><b>AM:</b> Tune vs. prompt vs. RAG. Supervised fine-tuning. Self-hosting Gemma 4 with vLLM. The evaluation pyramid. Red-teaming and Model Armor. Cost and scale engineering.</li>
+          <li><b>PM:</b> Capstone build sprint, then Demo Day with awards.</li>
+          <li><b>Artifacts:</b> tuned model, self-hosted endpoint, eval scorecard, Model Armor template, capstone product.</li>
+        </ul><a href="day5.html">Open Day 5 →</a></div></div>
+      <div class="card img-card reveal"><div class="img" style="background-image:url('assets/img/rocket-launch.jpg')"></div><div class="body">
+        <span class="tag amber">Capstone</span><h3>Launch Day</h3>
+        <ul class="dim">
+          <li>Five tracks to choose from. Each must combine at least one classical ML component and one generative or agentic component.</li>
+          <li>Deliverables: architecture diagram, live demo, eval scorecard, cost model, red-team report and a 3-minute pitch.</li>
+          <li>Optional async prep starts Day 3 evening.</li>
+        </ul><a href="capstone.html">Open the capstone brief →</a></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PEDAGOGY -->
+<section class="section" style="padding-top:20px">
+  <div class="wrap">
+    <div class="reveal"><div class="eyebrow">Design principles</div><h2>Why it's built this way</h2></div>
+    <div class="grid g3" style="margin-top:26px">
+      <div class="card lift reveal"><div class="icon">🔁</div><h4>One continuous story</h4><p class="dim">Artifacts from one day feed the next. Learners see a system grow instead of 30 disconnected demos.</p></div>
+      <div class="card lift reveal"><div class="icon">⚖️</div><h4>Classical vs. generative judgment</h4><p class="dim">Every day asks "what's the cheapest thing that works?" Learners leave able to say <em>no</em> to an LLM when a tree is better.</p></div>
+      <div class="card lift reveal"><div class="icon">🧪</div><h4>Show, then struggle</h4><p class="dim">Labs are scaffolded with code and expected outputs. Boss battles are open-ended so learners have to transfer the skill, not copy it.</p></div>
+      <div class="card lift reveal"><div class="icon">🎮</div><h4>Gamified momentum</h4><p class="dim">XP, ranks, badges and boss HP bars turn a long week into a campaign. Retrieval-practice quizzes close every day.</p></div>
+      <div class="card lift reveal"><div class="icon">🛡️</div><h4>Production realism</h4><p class="dim">Cost, IAM, evaluation and security are woven through every day, not saved for a single "best practices" slide.</p></div>
+      <div class="card lift reveal"><div class="icon">🧭</div><h4>Drift-proof skills</h4><p class="dim">APIs change monthly. "API drift check" callouts teach learners to read schemas, check versions and adapt, which outlasts any single SDK release.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ASSESSMENT -->
+<section class="section" style="padding-top:20px">
+  <div class="wrap split">
+    <div class="reveal">
+      <div class="eyebrow">Assessment</div>
+      <h2>How mastery is measured</h2>
+      <p>XP keeps things fun. Mastery is assessed on artifacts:</p>
+      <div class="table-wrap"><table>
+        <tr><th>Component</th><th>Weight</th><th>Evidence</th></tr>
+        <tr><td>Lab completion</td><td>25%</td><td>Working artifacts in the learner's project (datasets, models, endpoints, agents)</td></tr>
+        <tr><td>Boss battles</td><td>25%</td><td>Victory criteria met, demoed to a peer team</td></tr>
+        <tr><td>Daily quizzes</td><td>10%</td><td>Retrieval practice; ≥ 4/5 is the target</td></tr>
+        <tr><td>Capstone</td><td>40%</td><td>Scored against the <a href="capstone.html#rubric">capstone rubric</a></td></tr>
+      </table></div>
+    </div>
+    <figure class="photo reveal" style="margin:0"><img src="assets/img/analytics.jpg" alt="Analytics dashboard on a screen" loading="lazy"><figcaption>Measure what matters, including for learning.</figcaption></figure>
+  </div>
+</section>
+
+<!-- COST -->
+<section class="section" style="padding-top:20px">
+  <div class="wrap">
+    <div class="reveal"><div class="eyebrow">Budget</div><h2>Estimated cloud cost per learner</h2>
+    <p class="lead">Rough planning numbers assuming the daily cleanup is followed. Actual cost depends on region, pricing at the time of class and how adventurous people get in boss battles.</p></div>
+    <div class="table-wrap reveal" style="margin-top:20px"><table>
+      <tr><th>Day</th><th>Main cost drivers</th><th>Estimate</th></tr>
+      <tr><td>1 · Terra</td><td>BQML model training (bytes processed), small custom/HPT jobs</td><td>$3–8</td></tr>
+      <tr><td>2 · Luna</td><td>Pipeline runs, endpoint node-hours (undeploy!), Feature Store online serving</td><td>$8–15</td></tr>
+      <tr><td>3 · Jupiter</td><td>Gemini tokens, image generation, short video generation (the priciest per call)</td><td>$5–15</td></tr>
+      <tr><td>4 · Saturn</td><td>Embeddings, vector index, RAG Engine, Agent Runtime instances</td><td>$5–12</td></tr>
+      <tr><td>5 · Mars</td><td>Supervised tuning job, Cloud Run L4 GPU hours, evaluation tokens</td><td>$15–30</td></tr>
+      <tr><td><b>Total</b></td><td></td><td><b>≈ $40–80</b></td></tr>
+    </table></div>
+  </div>
+</section>
+
+<!-- INSTRUCTOR RUNBOOK -->
+<section class="section" style="padding-top:20px">
+  <div class="wrap">
+    <div class="reveal"><div class="eyebrow">Instructor runbook</div><h2>Running the mission without surprises</h2></div>
+    <div class="grid g2" style="margin-top:26px">
+      <div class="card reveal">
+        <h4>📅 T-14 days</h4>
+        <ul class="dim"><li>Provision projects (one per learner) under a folder with budgets.</li><li>Request <b>Cloud Run L4 GPU quota</b> and Gemini throughput headroom for the class size.</li><li>Check org policies: service account creation, external IPs, allowed regions.</li><li>Re-verify every model ID on the model-versions page.</li></ul>
+        <h4>📅 T-7 days</h4>
+        <ul class="dim"><li>Dry-run every lab end to end in a fresh project and update any API-drift spots.</li><li>Send learners <a href="setup.html">Launch Prep</a> with a "complete by T-1" deadline.</li></ul>
+        <h4>📅 T-1 day</h4>
+        <ul class="dim"><li>Check who completed Lab 0.1 and fix stragglers.</li><li>Pre-build a "rescue" project with Day 1–4 artifacts in case someone falls behind.</li></ul>
+      </div>
+      <div class="card reveal">
+        <h4>🎙️ Daily rituals</h4>
+        <ul class="dim"><li><b>09:00</b> "Mission status" check-in: XP leaderboard and yesterday's boss winners.</li><li><b>Each lab</b>: the instructor demos step 1 live, then circulates. Fast finishers take stretch goals or help others.</li><li><b>Boss battle</b>: put a countdown timer on the projector, play music, let teams call out "damage dealt".</li><li><b>16:50</b> Debrief quiz, then everyone runs cleanup together.</li></ul>
+        <h4>🔥 Known failure modes</h4>
+        <ul class="dim"><li>Dataset location mismatch (US vs us-central1) on Day 1.</li><li>429s when 30 people hit Gemini at once. Teach backoff and stagger runs.</li><li>Agent Runtime deploys take minutes. Start them before the break.</li><li>GPU quota not granted. Use the Model Garden fallback or an instructor demo.</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ADAPTATIONS -->
+<section class="section" style="padding-top:20px">
+  <div class="wrap">
+    <div class="reveal"><div class="eyebrow">Adapt the mission</div><h2>Variants</h2></div>
+    <div class="grid g3" style="margin-top:26px">
+      <div class="card lift reveal"><span class="tag amber">3 days</span><h4>Compressed</h4><p class="dim">Day 1 (Labs 1.1–1.3) + Day 3 (3.1–3.4) + Day 4 (4.3–4.6), with a mini-capstone. Drop MLOps to a demo.</p></div>
+      <div class="card lift reveal"><span class="tag violet">Async</span><h4>Self-paced</h4><p class="dim">The site is self-contained. Learners progress at their own speed, XP is saved locally, and boss battles become weekly challenges with a peer review.</p></div>
+      <div class="card lift reveal"><span class="tag magenta">Advanced</span><h4>Elite track</h4><p class="dim">Swap the 2.4 Feature Store lab for distributed training on TPUs, and add ADK 2.0 graph workflows plus custom eval metrics to Days 4–5.</p></div>
+    </div>
+    <div class="btn-row" style="margin-top:40px;justify-content:center">
+      <a class="btn btn-primary" href="setup.html">🚀 Start Launch Prep</a>
+      <a class="btn btn-ghost" href="field-guide.html">Open the Field Guide</a>
+    </div>
+  </div>
+</section>
+
+<script src="assets/js/main.js?v=2"></script>
+</body>
+</html>

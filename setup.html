@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Launch Prep — Environment Setup | AI Odyssey</title>
+<meta name="description" content="Lab 0 of AI Odyssey: set up your Google Cloud project, APIs, budget guardrails, IAM, Cloud Storage, Python SDKs, Colab Enterprise and your first Gemini call.">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css?v=2">
+</head>
+<body data-page="setup">
+
+<header class="hero day-hero">
+  <div class="hero-bg" style="background-image:url('assets/img/ship-interior.jpg')"></div>
+  <canvas class="starfield"></canvas>
+  <div class="wrap">
+    <div class="day-num">DAY 00 · PRE-FLIGHT</div>
+    <h1>Launch <span class="grad-text">Prep</span></h1>
+    <p class="lead">Every great voyage starts in the hangar. In 45 minutes you'll have a project with guardrails, the right APIs and permissions, a storage bucket, the 2026 SDKs, and a working Gemini call. That's everything the next five days depend on.</p>
+    <div class="mission-strip">
+      <div><b>1</b><span>Lab</span></div>
+      <div><b>~45m</b><span>Duration</span></div>
+      <div><b>100</b><span>XP available</span></div>
+      <div><b>🛠️</b><span>Badge: Ignition</span></div>
+    </div>
+  </div>
+</header>
+
+<div class="day-layout">
+  <aside class="toc">
+    <h5>Pre-flight checklist</h5>
+    <a href="#before">Before you arrive</a>
+    <a href="#options">Classroom setup options</a>
+    <a href="#lab-0-1">Lab 0.1 · Ignition Sequence</a>
+    <a href="#gpu">GPU quota (do it today!)</a>
+    <a href="#models">Model IDs we'll use</a>
+    <a href="#trouble">Troubleshooting</a>
+    <div class="toc-progress"><span class="faint" style="font-family:var(--font-mono);font-size:.72rem">PREP PROGRESS</span><div class="n" style="font-size:.82rem">0 / 0</div><div class="bar"><span></span></div></div>
+  </aside>
+
+  <main class="content">
+
+    <section id="before">
+      <div class="eyebrow">Before you arrive</div>
+      <h2>What you need on the launch pad</h2>
+      <div class="concept">
+        <div>
+          <ul>
+            <li><strong>A Google Cloud project with billing enabled.</strong> Budget about $40–80 for the full week if you follow the cleanup steps. Day 5's GPU and tuning labs are the biggest line items.</li>
+            <li><strong>Permissions:</strong> Owner on a sandbox project is easiest. In locked-down orgs, see the role list in step 5 below.</li>
+            <li><strong>A browser.</strong> Cloud Shell and Colab Enterprise mean zero local installs. Prefer local? You'll need Python 3.12+ and the <code>gcloud</code> CLI.</li>
+            <li><strong>Optional:</strong> a GitHub account (Day 2 CI/CD) and a Hugging Face account with accepted Gemma license (Day 5).</li>
+          </ul>
+          <div class="transmission"><p>Cadet, a word of advice from the old-timers: the most common way to lose an hour this week is a missing API or an org policy blocking a service account. Do this prep <em>the day before</em> class, not during. Mission Control out.</p></div>
+        </div>
+        <figure class="photo" style="margin:0"><img src="assets/img/desk-code.jpg" alt="Developer desk with monitors showing code" loading="lazy"><figcaption>Your cockpit for the week.</figcaption></figure>
+      </div>
+    </section>
+
+    <section id="options">
+      <div class="eyebrow">For instructors</div>
+      <h2>Classroom setup options</h2>
+      <div class="grid g3">
+        <div class="card"><span class="tag green">Recommended</span><h4>One project per learner</h4><p class="dim">Cleanest isolation, simplest IAM (each learner is Owner) and a clear per-person cost. Create projects from a folder with a budget per project.</p></div>
+        <div class="card"><span class="tag amber">OK</span><h4>One project per team</h4><p class="dim">Teams of 2–3 share a project. Prefix every resource with the team name (<code>odyssey_d1_teamorion</code>). Watch quotas on shared endpoints.</p></div>
+        <div class="card"><span class="tag magenta">Hard mode</span><h4>Shared class project</h4><p class="dim">Possible, but per-learner datasets, buckets and service accounts get messy, and one runaway GPU job hurts everyone. Avoid unless forced.</p></div>
+      </div>
+    </section>
+
+    <section id="lab-0-1">
+      <div class="lab" data-lab="0.1" data-xp="100">
+        <div class="lab-head">
+          <div class="lab-img" style="background-image:url('assets/img/rocket-pad.jpg')"></div>
+          <div class="lab-meta">
+            <div class="lab-id">LAB 0.1 · PRE-FLIGHT</div>
+            <h3>Ignition Sequence</h3>
+            <div class="lab-stats"><span>⏱ 45 min</span><span class="stars">★☆☆☆☆</span><span class="xp">+100 XP</span><span>🧰 Cloud Shell · gcloud · Colab Enterprise</span></div>
+          </div>
+        </div>
+        <div class="lab-body">
+          <p class="lab-goal">Configure a project that's ready for every lab in the course, with cost guardrails from minute one.</p>
+          <ol class="steps">
+            <li class="step">
+              <h4>Open Cloud Shell and set your coordinates</h4>
+              <p>Click the <span class="kbd">&gt;_</span> icon in the Cloud Console header. Then:</p>
+<pre data-lang="bash"><code class="language-bash">export PROJECT_ID="your-project-id"        # ← change me
+export REGION="us-central1"
+export BUCKET="gs://${PROJECT_ID}-odyssey"
+
+gcloud config set project "$PROJECT_ID"
+gcloud config set compute/region "$REGION"
+
+# Persist for future Cloud Shell sessions
+cat &gt;&gt; ~/.bashrc &lt;&lt;EOF
+export PROJECT_ID="$PROJECT_ID"
+export REGION="$REGION"
+export BUCKET="$BUCKET"
+EOF</code></pre>
+            </li>
+            <li class="step">
+              <h4>Enable the APIs for the whole week</h4>
+<pre data-lang="bash"><code class="language-bash">gcloud services enable \
+  aiplatform.googleapis.com \
+  bigquery.googleapis.com \
+  bigqueryconnection.googleapis.com \
+  bigquerystorage.googleapis.com \
+  storage.googleapis.com \
+  compute.googleapis.com \
+  dataform.googleapis.com \
+  notebooks.googleapis.com \
+  cloudbuild.googleapis.com \
+  artifactregistry.googleapis.com \
+  run.googleapis.com \
+  secretmanager.googleapis.com \
+  modelarmor.googleapis.com \
+  cloudtrace.googleapis.com \
+  monitoring.googleapis.com \
+  logging.googleapis.com \
+  iam.googleapis.com \
+  cloudresourcemanager.googleapis.com \
+  billingbudgets.googleapis.com</code></pre>
+              <div class="callout info"><span class="ttl">Why still "aiplatform"?</span><p>Gemini Enterprise Agent Platform (the April 2026 evolution of Vertex AI) is served from the same <code>aiplatform.googleapis.com</code> API. The brand changed but the endpoints and IAM roles kept their names. See the <a href="field-guide.html#rename">rename decoder</a>.</p></div>
+              <div class="expect">"Operation finished successfully." This can take 1–2 minutes.</div>
+              <details class="predict"><summary>Why does a course about AI need the Cloud Build, Secret Manager and Cloud Trace APIs?</summary><div><p>Because AI in production is mostly <em>software engineering</em>. Cloud Build ships your pipelines on Day 2, Secret Manager holds the Hugging Face token on Day 5, and Cloud Trace shows you why an agent was slow on Days 4–5.</p></div></details>
+            </li>
+            <li class="step">
+              <h4>Install a budget alarm before spending a cent</h4>
+<pre data-lang="bash"><code class="language-bash">BILLING_ACCOUNT=$(gcloud billing projects describe "$PROJECT_ID" \
+  --format="value(billingAccountName)" | sed 's|billingAccounts/||')
+
+gcloud billing budgets create \
+  --billing-account="$BILLING_ACCOUNT" \
+  --display-name="AI Odyssey guardrail" \
+  --budget-amount=100USD \
+  --filter-projects="projects/$PROJECT_ID" \
+  --threshold-rule=percent=0.5 \
+  --threshold-rule=percent=0.9 \
+  --threshold-rule=percent=1.0</code></pre>
+              <div class="callout cost"><span class="ttl">Budgets alert, they don't stop</span><p>A budget sends email at each threshold but <strong>does not cap spend</strong>. Your real protection is the daily cleanup at the end of each day page. Undeploy endpoints, delete Cloud Run GPU services, and stop notebooks.</p></div>
+              <details class="hint"><summary>Permission denied on billing?</summary><div><p>You need <code>roles/billing.costsManager</code> on the billing account. Ask your instructor or admin, or create the budget in the Console under Billing → Budgets &amp; alerts.</p></div></details>
+            </li>
+            <li class="step">
+              <h4>Create your cargo bay (Cloud Storage)</h4>
+<pre data-lang="bash"><code class="language-bash">gcloud storage buckets create "$BUCKET" \
+  --location="$REGION" \
+  --uniform-bucket-level-access
+
+# Auto-delete scratch artifacts after 14 days
+cat &gt; lifecycle.json &lt;&lt;'EOF'
+{"rule": [{"action": {"type": "Delete"}, "condition": {"age": 14}}]}
+EOF
+gcloud storage buckets update "$BUCKET" --lifecycle-file=lifecycle.json</code></pre>
+            </li>
+            <li class="step">
+              <h4>Create a least-privilege crew account</h4>
+              <p>Pipelines (Day 2), agents (Day 4) and Cloud Run services (Day 5) run as this service account, not as you. Getting into that habit now pays off in production.</p>
+<pre data-lang="bash"><code class="language-bash">SA="odyssey-crew@${PROJECT_ID}.iam.gserviceaccount.com"
+gcloud iam service-accounts create odyssey-crew --display-name="AI Odyssey crew"
+
+for ROLE in roles/aiplatform.user roles/bigquery.dataEditor roles/bigquery.jobUser \
+            roles/storage.objectAdmin roles/logging.logWriter roles/monitoring.metricWriter \
+            roles/cloudtrace.agent roles/secretmanager.secretAccessor; do
+  gcloud projects add-iam-policy-binding "$PROJECT_ID" \
+    --member="serviceAccount:$SA" --role="$ROLE" --condition=None --quiet &gt;/dev/null
+done
+echo "Crew account ready: $SA"</code></pre>
+              <details class="deep"><summary>Not an Owner? Roles your user needs</summary><div>
+                <p>Ask your admin for: <code>roles/aiplatform.user</code>, <code>roles/bigquery.admin</code> (or dataEditor + jobUser + connectionAdmin), <code>roles/storage.admin</code>, <code>roles/serviceusage.serviceUsageConsumer</code>, <code>roles/iam.serviceAccountUser</code>, <code>roles/run.admin</code>, <code>roles/cloudbuild.builds.editor</code>, <code>roles/artifactregistry.admin</code>, <code>roles/modelarmor.admin</code>, <code>roles/notebooks.admin</code>. A sandbox project with Owner saves real time.</p>
+              </div></details>
+            </li>
+            <li class="step">
+              <h4>Install the 2026 toolchain</h4>
+              <p>Cloud Shell has Python. Create an isolated environment so versions are reproducible:</p>
+<pre data-lang="bash"><code class="language-bash">python3 -m venv ~/odyssey &amp;&amp; source ~/odyssey/bin/activate
+echo 'source ~/odyssey/bin/activate' &gt;&gt; ~/.bashrc
+
+pip install --upgrade pip
+pip install \
+  google-genai \
+  google-cloud-aiplatform \
+  google-cloud-bigquery bigframes db-dtypes \
+  kfp google-cloud-pipeline-components \
+  google-adk \
+  xgboost scikit-learn pandas pyarrow \
+  openai
+
+pip freeze | grep -Ei "genai|aiplatform|adk|bigframes|kfp"   # note your versions</code></pre>
+              <div class="callout tip"><span class="ttl">Which SDK does what?</span><p><code>google-genai</code> calls Gemini models. <code>google-cloud-aiplatform</code> drives the platform: training, pipelines, endpoints, evaluation, tuning, RAG Engine and Agent Runtime. <code>google-adk</code> builds agents. <code>bigframes</code> is pandas on BigQuery.</p></div>
+            </li>
+            <li class="step">
+              <h4>Authenticate your code (ADC)</h4>
+<pre data-lang="bash"><code class="language-bash"># In Cloud Shell, your user creds are already available to libraries.
+# On a laptop, run:
+gcloud auth application-default login
+gcloud auth application-default set-quota-project "$PROJECT_ID"</code></pre>
+            </li>
+            <li class="step">
+              <h4>First contact: talk to Gemini</h4>
+<pre data-lang="bash"><code class="language-bash">cat &gt; first_contact.py &lt;&lt;'EOF'
+import os
+from google import genai
+
+client = genai.Client(vertexai=True,
+                      project=os.environ["PROJECT_ID"],
+                      location="global")
+
+resp = client.models.generate_content(
+    model="gemini-3.8-flash",
+    contents="In exactly two sentences, welcome a new crew member aboard the AI Odyssey, "
+             "a week-long voyage through machine learning on Google Cloud. Be delightfully dramatic.",
+)
+print(resp.text)
+print("\ntokens:", resp.usage_metadata.total_token_count)
+EOF
+python first_contact.py</code></pre>
+              <figure class="shot"><div class="shot-bar"><i></i><i></i><i></i><span>Cloud Shell · python first_contact.py</span><span class="live">SAMPLE OUTPUT</span></div>
+<div class="term"><span class="p">(odyssey) $</span> python first_contact.py
+<span class="w">Welcome aboard, crew member — the stars have been waiting for you, and every gradient
+you descend this week brings us closer to worlds no model has ever predicted. Strap in:
+the AI Odyssey launches now, and there is no turning back.</span>
+
+<span class="c">tokens:</span> <span class="y">87</span></div><figcaption><b>Sample:</b> Gemini will write something different (and hopefully just as dramatic) for you.</figcaption></figure>
+              <div class="expect">A dramatic two-sentence welcome and a token count. If you see it, your project, API, auth and SDK all work. 🎉</div>
+            </li>
+            <li class="step">
+              <h4>Confirm BigQuery and public data access</h4>
+<pre data-lang="bash"><code class="language-bash">bq query --use_legacy_sql=false \
+'SELECT COUNT(*) AS orders FROM `bigquery-public-data.thelook_ecommerce.orders`'</code></pre>
+              <figure class="shot"><div class="shot-bar"><i></i><i></i><i></i><span>Cloud Shell · bq query</span><span class="live">REPRESENTATIVE</span></div>
+<div class="term">Waiting on bqjob_r1a2b3c4d5_0000019a_1 ... (0s) Current status: <span class="p">DONE</span>
++--------+
+| orders |
++--------+
+| <span class="y">125xxx</span> |
++--------+</div><figcaption><b>Representative:</b> thelook is synthetic and keeps growing, so your count will differ.</figcaption></figure>
+              <div class="expect">A row count in the hundreds of thousands. This is the dataset that comes back all week.</div>
+            </li>
+            <li class="step">
+              <h4>Spin up a Colab Enterprise notebook</h4>
+              <p>Console → <strong>Colab Enterprise</strong> → <strong>Create notebook</strong> → <strong>Connect</strong> (default runtime). In the first cell:</p>
+<pre data-lang="python"><code class="language-python">PROJECT_ID = "your-project-id"   # ← change me
+REGION = "us-central1"
+BUCKET = f"gs://{PROJECT_ID}-odyssey"
+
+from google import genai
+client = genai.Client(vertexai=True, project=PROJECT_ID, location="global")
+print(client.models.generate_content(model="gemini-3.5-flash-lite",
+      contents="Say 'systems nominal' in a space-mission voice.").text)</code></pre>
+              <div class="sidequest" data-sq="0.crew-name" data-xp="30"><div class="sq-ico">🏴‍☠️</div><div><span class="sq-tag">SIDE QUEST</span><b>Christen Your Ship</b><p>Ask Gemini to propose five space-themed team names that are puns on machine learning terms (gradient, overfit, embedding…). Pick one. It becomes your team's prefix for every resource this week.</p></div><button type="button"></button></div>
+              <div class="callout tip"><span class="ttl">Idle shutdown</span><p>Create a <strong>runtime template</strong> with idle shutdown at 60 minutes so a forgotten notebook doesn't run all night.</p></div>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section id="gpu">
+      <div class="eyebrow">Do it today</div>
+      <h2>⚠️ Request GPU quota now</h2>
+      <div class="concept">
+        <div>
+          <p>Day 5 serves <strong>Gemma 4</strong> on <strong>Cloud Run with an NVIDIA L4 GPU</strong>. New projects often have a GPU quota of zero, and approvals can take a day or more.</p>
+          <ol>
+            <li>Console → <strong>IAM &amp; Admin → Quotas &amp; system limits</strong>.</li>
+            <li>Filter: <code>Total Nvidia L4 GPU allocation, per project per region</code> for <strong>Cloud Run Admin API</strong>, region <code>us-central1</code>.</li>
+            <li>Request <strong>1–3</strong> with justification "Training course lab: serving an open model with vLLM".</li>
+          </ol>
+          <p class="dim">No quota by Friday? Day 5 includes a Model Garden managed-deployment alternative, and the instructor can demo the Cloud Run path.</p>
+        </div>
+        <figure class="photo" style="margin:0"><img src="assets/img/circuit.jpg" alt="Close-up of a circuit board" loading="lazy"><figcaption>GPUs: the rocket fuel of Day 5.</figcaption></figure>
+      </div>
+    </section>
+
+    <section id="models">
+      <div class="eyebrow">Reference</div>
+      <h2>Model IDs we'll use this week</h2>
+      <p>Verified against Google's model-versions page in November 2026. Models move fast, so check the <a href="field-guide.html#models">Field Guide</a> before each class.</p>
+      <div class="table-wrap"><table>
+        <tr><th>Role</th><th>Model ID</th><th>Used for</th></tr>
+        <tr><td>⚡ Workhorse</td><td><code>gemini-3.8-flash</code></td><td>Most labs: fast, smart, cheap</td></tr>
+        <tr><td>🪶 Budget</td><td><code>gemini-3.5-flash-lite</code></td><td>High-volume classification, routing, BigQuery batch</td></tr>
+        <tr><td>🧠 Frontier</td><td><code>gemini-4-argon</code></td><td>Deep reasoning, hard coding/analysis, 1M context</td></tr>
+        <tr><td>🎨 Image</td><td><code>gemini-3.1-flash-image</code> · <code>gemini-3-pro-image</code></td><td>Image generation and editing (Nano Banana family)</td></tr>
+        <tr><td>🎬 Video</td><td><code>veo-3.1-fast-generate-001</code> → <code>gemini-omni-1.2-flash</code></td><td>Video generation (Omni is the listed successor)</td></tr>
+        <tr><td>🧭 Embeddings</td><td><code>gemini-embedding-001</code> · <code>gemini-embedding-2</code></td><td>Semantic search and RAG</td></tr>
+        <tr><td>🎙️ Live</td><td><code>gemini-3.8-live</code></td><td>Real-time voice/video sessions</td></tr>
+        <tr><td>🔓 Open</td><td>Gemma 4</td><td>Self-hosted serving on Cloud Run GPUs</td></tr>
+      </table></div>
+      <div class="callout warn"><span class="ttl">Retired, so don't copy old tutorials</span><p><code>gemini-2.5-pro</code>, <code>gemini-2.5-flash</code> and <code>gemini-2.5-flash-lite</code> retired on <strong>Oct 20, 2026</strong>. <code>gemini-2.0-*</code>, Imagen 3/4 and Veo 2/3.0 IDs are also retired. Code from 2025 blog posts will 404 until you swap the model ID.</p></div>
+    </section>
+
+    <section id="trouble">
+      <div class="eyebrow">When things go sideways</div>
+      <h2>Troubleshooting</h2>
+      <div class="table-wrap"><table>
+        <tr><th>Symptom</th><th>Likely cause</th><th>Fix</th></tr>
+        <tr><td><code>403 PERMISSION_DENIED … aiplatform</code></td><td>API not enabled or missing role</td><td>Re-run step 2; check <code>roles/aiplatform.user</code></td></tr>
+        <tr><td><code>404 … model not found</code></td><td>Retired or misspelled model ID, or wrong location</td><td>Use <code>location="global"</code> for Gemini; check the model table</td></tr>
+        <tr><td><code>429 RESOURCE_EXHAUSTED</code></td><td>Burst over quota (common when 30 people start at once)</td><td>Retry with backoff; stagger runs; use Flash-Lite for loops</td></tr>
+        <tr><td>BigQuery "Not found: Dataset … in location"</td><td>Your dataset isn't in <code>US</code></td><td>Recreate the dataset with <code>location='US'</code></td></tr>
+        <tr><td>Org policy blocks service account keys</td><td>Good! Don't use keys</td><td>Use ADC and service account impersonation instead</td></tr>
+        <tr><td>Colab runtime won't start</td><td>Missing <code>dataform</code>/<code>compute</code> API, or VPC policy</td><td>Enable APIs; ask admin about the default network</td></tr>
+      </table></div>
+
+      <div class="quiz" data-quiz="d0">
+        <div class="quiz-head"><h3>📡 Pre-flight quiz</h3><span class="quiz-score"></span></div>
+        <div class="q"><p>1. Does a Cloud Billing budget stop spending when it hits 100%?</p><div class="opts">
+          <button>Yes, it disables billing automatically</button>
+          <button data-correct>No, budgets only alert (unless you wire alerts to automation yourself)</button>
+          <button>Only for GPU resources</button></div>
+          <div class="why">Budgets notify. To cap spend you'd connect budget Pub/Sub notifications to a function that takes action, which is rarely worth it for a class. Clean up daily instead.</div></div>
+        <div class="q"><p>2. Which Python package do you use to call Gemini models in 2026?</p><div class="opts">
+          <button>google-generativeai</button>
+          <button data-correct>google-genai (<code>from google import genai</code>)</button>
+          <button>vertexai.preview.generative_models only</button></div>
+          <div class="why">The unified Google Gen AI SDK (<code>google-genai</code>) works against both the Gemini Developer API and Agent Platform (<code>vertexai=True</code>).</div></div>
+        <div class="q"><p>3. Why run pipelines and agents as a dedicated service account?</p><div class="opts">
+          <button>It's faster</button>
+          <button data-correct>Least privilege and auditability: workloads get only the permissions they need, separate from humans</button>
+          <button>Service accounts are free; users are billed</button></div>
+          <div class="why">Least privilege limits blast radius, which matters even more for agents that can call tools (Day 4–5).</div></div>
+      </div>
+
+      <div class="pager">
+        <a href="syllabus.html"><small>← Back</small><b>Flight Plan</b></a>
+        <a class="next" href="day1.html"><small>First world →</small><b>Day 1 · Terra: Classical ML</b></a>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+<script src="assets/js/main.js?v=2"></script>
+</body>
+</html>

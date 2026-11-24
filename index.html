@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Odyssey — Advanced AI on Google Cloud</title>
+<meta name="description" content="A 5-day, hands-on voyage through advanced AI on Google Cloud: classical ML with BigQuery ML, MLOps, Gemini 4, multimodal generative AI, RAG, ADK agents, A2A, MCP, fine-tuning, evaluation and AI safety — 2026 edition.">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css?v=2">
+</head>
+<body data-page="home">
+
+<!-- ================= HERO ================= -->
+<header class="hero">
+  <div class="hero-bg" style="background-image:url('assets/img/hero-milkyway.jpg')"></div>
+  <canvas class="starfield"></canvas>
+  <div class="wrap">
+    <div class="eyebrow">A 5-day expedition · 2026 edition</div>
+    <h1>AI <span class="grad-text">Odyssey</span><br>on Google Cloud</h1>
+    <p class="lead">Five days. Five worlds. Thirty labs. Start with gradient-boosted trees in BigQuery, finish by shipping Gemini 4-powered multi-agent systems that talk to each other over A2A. Along the way you'll tune, evaluate and defend every one of them.</p>
+    <div class="hero-badges">
+      <span class="pill">🪐 <b>5</b> days / 5 worlds</span>
+      <span class="pill">🧪 <b>30</b> hands-on labs</span>
+      <span class="pill">☠️ <b>5</b> boss battles</span>
+      <span class="pill">🚀 <b>1</b> capstone launch</span>
+      <span class="pill">✨ Gemini 4 · ADK 2.0 · A2A · MCP</span>
+    </div>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="setup.html">🚀 Begin Launch Prep</a>
+      <a class="btn btn-ghost" href="syllabus.html">View the Flight Plan →</a>
+    </div>
+  </div>
+  <div class="scroll-cue">SCROLL<br>▾</div>
+</header>
+
+<!-- ================= THE VOYAGE ================= -->
+<section class="section" id="voyage">
+  <div class="wrap">
+    <div class="center reveal">
+      <div class="eyebrow">The voyage</div>
+      <h2>One week. Five planets. <span class="grad-text">Zero hand-waving.</span></h2>
+      <p class="lead">Every day is a world with its own terrain. You land, learn the physics, run the labs, then face that world's boss. Earn XP, rank up from Cadet to Admiral, and leave with a portfolio of working systems.</p>
+    </div>
+
+    <div class="voyage-map reveal" aria-label="Animated voyage map: a rocket travels past the five planets of the course">
+      <svg viewBox="0 0 1110 340" role="img">
+        <defs>
+          <linearGradient id="vmpath" x1="0" x2="1"><stop offset="0" stop-color="#2ee6a6"/><stop offset=".25" stop-color="#4cc9f0"/><stop offset=".5" stop-color="#ffb703"/><stop offset=".75" stop-color="#8b6cff"/><stop offset="1" stop-color="#ff4d6d"/></linearGradient>
+          <radialGradient id="vmshade" cx="35%" cy="30%" r="75%"><stop offset="0" stop-color="#fff" stop-opacity=".12"/><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".75"/></radialGradient>
+          <filter id="vmglow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="14"/></filter>
+          <clipPath id="vmclip0"><circle cx="110" cy="230" r="46"/></clipPath><clipPath id="vmclip1"><circle cx="320" cy="140" r="46"/></clipPath><clipPath id="vmclip2"><circle cx="550" cy="200" r="46"/></clipPath><clipPath id="vmclip3"><circle cx="780" cy="110" r="46"/></clipPath><clipPath id="vmclip4"><circle cx="1000" cy="170" r="46"/></clipPath>
+        </defs>
+        <path d="M110 230 C 190 120, 250 110, 320 140 S 470 235, 550 200 S 700 90, 780 110 S 930 205, 1000 170" fill="none" stroke="url(#vmpath)" stroke-width="2.5" stroke-dasharray="2 10" stroke-linecap="round" opacity=".9"><animate attributeName="stroke-dashoffset" from="0" to="-120" dur="4s" repeatCount="indefinite"/></path>
+        <a href="day1.html"><g class="vm-planet">
+      <circle cx="110" cy="230" r="58" fill="none" stroke="#2ee6a6" stroke-opacity=".35" stroke-dasharray="3 5"><animateTransform attributeName="transform" type="rotate" from="0 110 230" to="360 110 230" dur="30s" repeatCount="indefinite"/></circle>
+      <circle cx="110" cy="230" r="46" fill="#2ee6a6" opacity=".25" filter="url(#vmglow)"/>
+      <image href="assets/img/earth-iss.jpg" x="64" y="184" width="92" height="92" preserveAspectRatio="xMidYMid slice" clip-path="url(#vmclip0)"/>
+      <circle cx="110" cy="230" r="46" fill="url(#vmshade)"/>
+      <text x="110" y="308" text-anchor="middle" fill="#2ee6a6" font-family="JetBrains Mono, monospace" font-size="12" letter-spacing="2">DAY 1 · TERRA</text>
+      <text x="110" y="327" text-anchor="middle" fill="#e9ecff" font-family="Space Grotesk, sans-serif" font-size="16" font-weight="700">Classical ML</text>
+    </g></a><a href="day2.html"><g class="vm-planet">
+      <circle cx="320" cy="140" r="58" fill="none" stroke="#4cc9f0" stroke-opacity=".35" stroke-dasharray="3 5"><animateTransform attributeName="transform" type="rotate" from="0 320 140" to="360 320 140" dur="36s" repeatCount="indefinite"/></circle>
+      <circle cx="320" cy="140" r="46" fill="#4cc9f0" opacity=".25" filter="url(#vmglow)"/>
+      <image class="blend" href="assets/img/moon-full.jpg" x="274" y="94" width="92" height="92" preserveAspectRatio="xMidYMid slice" clip-path="url(#vmclip1)"/>
+      <circle cx="320" cy="140" r="46" fill="url(#vmshade)"/>
+      <text x="320" y="218" text-anchor="middle" fill="#4cc9f0" font-family="JetBrains Mono, monospace" font-size="12" letter-spacing="2">DAY 2 · LUNA</text>
+      <text x="320" y="237" text-anchor="middle" fill="#e9ecff" font-family="Space Grotesk, sans-serif" font-size="16" font-weight="700">MLOps</text>
+    </g></a><a href="day3.html"><g class="vm-planet">
+      <circle cx="550" cy="200" r="58" fill="none" stroke="#ffb703" stroke-opacity=".35" stroke-dasharray="3 5"><animateTransform attributeName="transform" type="rotate" from="0 550 200" to="360 550 200" dur="42s" repeatCount="indefinite"/></circle>
+      <circle cx="550" cy="200" r="46" fill="#ffb703" opacity=".25" filter="url(#vmglow)"/>
+      <image class="blend" href="assets/img/jupiter.jpg" x="504" y="154" width="92" height="92" preserveAspectRatio="xMidYMid slice" clip-path="url(#vmclip2)"/>
+      <circle cx="550" cy="200" r="46" fill="url(#vmshade)"/>
+      <text x="550" y="278" text-anchor="middle" fill="#ffb703" font-family="JetBrains Mono, monospace" font-size="12" letter-spacing="2">DAY 3 · JUPITER</text>
+      <text x="550" y="297" text-anchor="middle" fill="#e9ecff" font-family="Space Grotesk, sans-serif" font-size="16" font-weight="700">Generative AI</text>
+    </g></a><a href="day4.html"><g class="vm-planet">
+      <circle cx="780" cy="110" r="58" fill="none" stroke="#8b6cff" stroke-opacity=".35" stroke-dasharray="3 5"><animateTransform attributeName="transform" type="rotate" from="0 780 110" to="360 780 110" dur="48s" repeatCount="indefinite"/></circle>
+      <circle cx="780" cy="110" r="46" fill="#8b6cff" opacity=".25" filter="url(#vmglow)"/>
+      <image class="blend" href="assets/img/saturn.jpg" x="734" y="64" width="92" height="92" preserveAspectRatio="xMidYMid slice" clip-path="url(#vmclip3)"/>
+      <circle cx="780" cy="110" r="46" fill="url(#vmshade)"/>
+      <text x="780" y="188" text-anchor="middle" fill="#8b6cff" font-family="JetBrains Mono, monospace" font-size="12" letter-spacing="2">DAY 4 · SATURN</text>
+      <text x="780" y="207" text-anchor="middle" fill="#e9ecff" font-family="Space Grotesk, sans-serif" font-size="16" font-weight="700">Agents</text>
+    </g></a><a href="day5.html"><g class="vm-planet">
+      <circle cx="1000" cy="170" r="58" fill="none" stroke="#ff4d6d" stroke-opacity=".35" stroke-dasharray="3 5"><animateTransform attributeName="transform" type="rotate" from="0 1000 170" to="360 1000 170" dur="54s" repeatCount="indefinite"/></circle>
+      <circle cx="1000" cy="170" r="46" fill="#ff4d6d" opacity=".25" filter="url(#vmglow)"/>
+      <image class="blend" href="assets/img/mars.jpg" x="954" y="124" width="92" height="92" preserveAspectRatio="xMidYMid slice" clip-path="url(#vmclip4)"/>
+      <circle cx="1000" cy="170" r="46" fill="url(#vmshade)"/>
+      <text x="1000" y="248" text-anchor="middle" fill="#ff4d6d" font-family="JetBrains Mono, monospace" font-size="12" letter-spacing="2">DAY 5 · MARS</text>
+      <text x="1000" y="267" text-anchor="middle" fill="#e9ecff" font-family="Space Grotesk, sans-serif" font-size="16" font-weight="700">Frontier</text>
+    </g></a>
+        <g><text font-size="30" transform="rotate(45) translate(-14 10)">🚀</text>
+          <animateMotion dur="16s" repeatCount="indefinite" rotate="auto" keyPoints="0;1;1" keyTimes="0;.85;1" calcMode="linear" path="M110 230 C 190 120, 250 110, 320 140 S 470 235, 550 200 S 700 90, 780 110 S 930 205, 1000 170"/></g>
+        <text x="1000" y="40" text-anchor="middle" fill="#ffb703" font-family="JetBrains Mono, monospace" font-size="12" letter-spacing="2">🏁 CAPSTONE</text>
+      </svg>
+    </div>
+    <div class="planets" style="margin-top:56px">
+      <a class="card lift planet-card reveal" href="day1.html" style="--pcolor:#2ee6a6;--pglow:rgba(46,230,166,.35)">
+        <div class="planet" style="background-image:url('assets/img/earth-iss.jpg');background-size:220%;background-position:30% 60%"></div>
+        <div class="dayno">DAY 01 · TERRA</div>
+        <h3>Classical ML at Planet Scale</h3>
+        <p>BigQuery ML, TimesFM forecasting, XGBoost, BigQuery DataFrames, explainability.</p>
+      </a>
+      <a class="card lift planet-card reveal" href="day2.html" style="--pcolor:#4cc9f0;--pglow:rgba(76,201,240,.35)">
+        <div class="planet" style="background-image:url('assets/img/moon-full.jpg');background-size:175%"></div>
+        <div class="dayno">DAY 02 · LUNA</div>
+        <h3>Orbit Ops: MLOps</h3>
+        <p>Pipelines, experiments, registry, endpoints, Feature Store, monitoring, CI/CD.</p>
+      </a>
+      <a class="card lift planet-card reveal" href="day3.html" style="--pcolor:#ffb703;--pglow:rgba(255,183,3,.35)">
+        <div class="planet" style="background-image:url('assets/img/jupiter.jpg');background-size:210%;background-position:42% 50%"></div>
+        <div class="dayno">DAY 03 · JUPITER</div>
+        <h3>The Gemini Giant</h3>
+        <p>Gemini 4 and 3.8 Flash, structured output, multimodal, grounding, image and video generation.</p>
+      </a>
+      <a class="card lift planet-card reveal" href="day4.html" style="--pcolor:#8b6cff;--pglow:rgba(139,108,255,.4)">
+        <div class="planet" style="background-image:url('assets/img/saturn.jpg');background-size:150%"></div>
+        <div class="dayno">DAY 04 · SATURN</div>
+        <h3>Rings of Agents</h3>
+        <p>Embeddings, vector search, RAG Engine, ADK 2.0, MCP, A2A, Agent Runtime and Memory Bank.</p>
+      </a>
+      <a class="card lift planet-card reveal" href="day5.html" style="--pcolor:#ff4d6d;--pglow:rgba(255,77,109,.4)">
+        <div class="planet" style="background-image:url('assets/img/mars.jpg');background-size:175%"></div>
+        <div class="dayno">DAY 05 · MARS</div>
+        <h3>The Red Frontier</h3>
+        <p>Fine-tuning, Gemma 4 serving, evaluation, Model Armor, cost engineering, and the capstone.</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================= SHOWCASE ================= -->
+<section class="section" id="showcase">
+  <div class="wrap">
+    <div class="center reveal">
+      <div class="eyebrow">Built to be played</div>
+      <h2>Every lab is a <span class="grad-mint">mission</span>, not a worksheet</h2>
+      <p class="lead">Real tools, real outputs, and lots of small moments of delight to keep a 5-day course moving.</p>
+    </div>
+    <div class="showcase" style="margin-top:44px">
+      <figure class="shot tilt reveal" style="margin:0"><div class="shot-bar"><i></i><i></i><i></i><span>localhost:8000 · ADK Dev UI · Agent Structure</span><span class="live">REAL SCREENSHOT</span></div>
+        <img src="assets/img/shots/adk-graph-crew.jpg" alt="ADK Dev UI agent graph: a sequential campaign crew with a parallel research fan-out and a writer-critic loop" loading="lazy">
+        <figcaption><b>Day 4:</b> the multi-agent crew you build, visualized live by ADK 2.15's Dev UI.</figcaption></figure>
+      <div class="grid" style="gap:14px">
+        <div class="card reveal" style="padding:18px 20px"><b style="font-family:var(--font-display)">🧠 Predict before you run</b><p class="dim" style="margin:4px 0 0;font-size:.93rem">Commit to a guess, then reveal. Prediction is how intuition gets built.</p></div>
+        <div class="card reveal" style="padding:18px 20px"><b style="font-family:var(--font-display)">📸 What you'll see</b><p class="dim" style="margin:4px 0 0;font-size:.93rem">Output windows show what success looks like, so you know at a glance when you're on course.</p></div>
+        <div class="card reveal" style="padding:18px 20px"><b style="font-family:var(--font-display)">🗝️ Side quests</b><p class="dim" style="margin:4px 0 0;font-size:.93rem">Optional challenges like Leak Hunter and Prompt Golf for bonus XP and deeper understanding.</p></div>
+        <div class="card reveal" style="padding:18px 20px"><b style="font-family:var(--font-display)">⏱ Mission clocks</b><p class="dim" style="margin:4px 0 0;font-size:.93rem">Time every lab and beat your best. Speedruns welcome, but cleanup is mandatory.</p></div>
+        <div class="card reveal" style="padding:18px 20px"><b style="font-family:var(--font-display)">☠️ Boss battles</b><p class="dim" style="margin:4px 0 0;font-size:.93rem">Open-ended team challenges with a live HP bar. Hit every criterion to land the final blow.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= STATS ================= -->
+<section class="section-tight">
+  <div class="wrap">
+    <div class="stats">
+      <div class="stat reveal"><b class="grad-text" data-count="30">30</b><span>Hands-on labs</span></div>
+      <div class="stat reveal"><b class="grad-mint" data-count="70" data-suffix="%">70%</b><span>Time at the keyboard</span></div>
+      <div class="stat reveal"><b class="grad-sun" data-count="40" data-suffix="+">40+</b><span>GCP services touched</span></div>
+      <div class="stat reveal"><b class="grad-text" data-count="8000" data-suffix="+ XP">8000+ XP</b><span>Up for grabs</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= WHAT'S NEW 2026 ================= -->
+<section class="section" id="new">
+  <div class="orb" style="width:500px;height:500px;background:#8b6cff;top:10%;right:-10%"></div>
+  <div class="wrap">
+    <div class="reveal">
+      <div class="eyebrow">State of the cosmos · November 2026</div>
+      <h2>The map changed. <span class="grad-sun">A lot.</span></h2>
+      <p class="lead">If your mental model of Google Cloud AI is from 2024, this course is your recalibration. These are the changes the labs are built around.</p>
+    </div>
+    <div class="grid g3" style="margin-top:40px">
+      <div class="card img-card lift reveal">
+        <div class="img" style="background-image:url('assets/img/nebula-color.jpg')"></div>
+        <div class="body"><span class="tag magenta">Rebrand</span><h3>Vertex AI → Gemini Enterprise Agent Platform</h3><p class="dim">Since April 2026, Vertex AI services are delivered through the <strong>Agent Platform</strong>. It covers models, training, pipelines, agents and governance in one place. The old names still show up in SDKs and docs, and we'll decode both.</p></div>
+      </div>
+      <div class="card img-card lift reveal">
+        <div class="img" style="background-image:url('assets/img/galaxy-core.jpg')"></div>
+        <div class="body"><span class="tag amber">Models</span><h3>Gemini 4 + 3.8 Flash</h3><p class="dim"><code>gemini-4-argon</code> handles frontier "deep work" with a 1M-token context and LOW/MEDIUM/HIGH thinking levels. <code>gemini-3.8-flash</code> and <code>gemini-3.5-flash-lite</code> are the workhorses. Gemini 2.5 retired in October 2026.</p></div>
+      </div>
+      <div class="card img-card lift reveal">
+        <div class="img" style="background-image:url('assets/img/network-cubes.jpg')"></div>
+        <div class="body"><span class="tag violet">Agents</span><h3>ADK 2.0 + Agent Runtime</h3><p class="dim">ADK 2.0 adds a graph-based engine that mixes model-led reasoning with deterministic workflows. Agents deploy to <strong>Agent Runtime</strong> with Sessions, <strong>Memory Bank</strong> and Sandbox, and they talk to each other over <strong>A2A</strong>.</p></div>
+      </div>
+      <div class="card img-card lift reveal">
+        <div class="img" style="background-image:url('assets/img/cosmic-swirl.jpg')"></div>
+        <div class="body"><span class="tag">Creative</span><h3>Nano Banana &amp; Omni</h3><p class="dim">Image generation and editing now run on Gemini-native models (<code>gemini-3.1-flash-image</code>, <code>gemini-3-pro-image</code>). <code>gemini-omni-1.2-flash</code> is the successor to the Veo line for video.</p></div>
+      </div>
+      <div class="card img-card lift reveal">
+        <div class="img" style="background-image:url('assets/img/circuit-glow.jpg')"></div>
+        <div class="body"><span class="tag green">Governance</span><h3>Agent Identity, Gateway &amp; Model Armor</h3><p class="dim">Agents get their own identities, a registry and a gateway. <strong>Model Armor</strong> screens prompts and responses for injection, jailbreaks and data leakage, and Day 5 is about breaking past it.</p></div>
+      </div>
+      <div class="card img-card lift reveal">
+        <div class="img" style="background-image:url('assets/img/analytics.jpg')"></div>
+        <div class="body"><span class="tag">Data + AI</span><h3>BigQuery is an AI engine</h3><p class="dim"><code>AI.GENERATE</code>, <code>AI.FORECAST</code> with TimesFM, vector search, and BigQuery DataFrames. Classical ML and generative AI now meet in SQL, and Day 1 starts there.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CLASSICAL + FRONTIER ================= -->
+<section class="section">
+  <div class="wrap split">
+    <figure class="photo reveal" style="margin:0"><img src="assets/img/math-board.jpg" alt="Chalkboard full of mathematical diagrams" loading="lazy"><figcaption>Gradient boosting still wins on tabular data. Learn when.</figcaption></figure>
+    <div class="reveal">
+      <div class="eyebrow">Philosophy</div>
+      <h2>Classical roots, <span class="grad-text">frontier branches</span></h2>
+      <p>Not every problem needs a trillion-parameter model. A churn model in BigQuery ML costs pennies, trains in minutes and is fully explainable. An agent that reads contracts needs Gemini. <strong>Senior AI engineers know which tool fits which job</strong>, and this course teaches that judgment.</p>
+      <ul class="dim">
+        <li><strong>Days 1–2</strong> build the discipline: features, metrics, pipelines, monitoring.</li>
+        <li><strong>Days 3–4</strong> unleash generative AI and agents on top of that foundation.</li>
+        <li><strong>Day 5</strong> closes the loop: tune, evaluate, secure and run it at scale.</li>
+      </ul>
+      <p class="dim">You'll see the same e-commerce dataset (<code>thelook_ecommerce</code>) come back across the week. Day 1 predicts churn on it, Day 3 writes retention emails, Day 4 builds the support agent and Day 5 evaluates and defends it.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= BANNER QUOTE ================= -->
+<section class="banner">
+  <div class="bg" style="background-image:url('assets/img/rocket-arc.jpg')"></div>
+  <div class="wrap">
+    <blockquote>"A demo is a prototype that hasn't met reality yet. This week, every lab meets reality: real data, real costs, real evaluations, real adversaries."</blockquote>
+    <cite>— Mission Control, AI Odyssey</cite>
+  </div>
+</section>
+
+<!-- ================= HOW IT WORKS ================= -->
+<section class="section" id="how">
+  <div class="wrap">
+    <div class="center reveal">
+      <div class="eyebrow">How the expedition runs</div>
+      <h2>Learn → Build → <span class="grad-sun">Battle</span> → Debrief</h2>
+      <p class="lead">Each day follows the same rhythm, tuned for energy and retention. Short concept bursts, long lab blocks, one dramatic finale.</p>
+    </div>
+    <div class="grid g4" style="margin-top:46px">
+      <div class="card lift reveal"><div class="icon">🛰️</div><h4>Briefing</h4><p class="dim">20–30 min concept bursts with diagrams, the "why" and how it works under the hood. No 2-hour slide marathons.</p></div>
+      <div class="card lift reveal"><div class="icon">🧪</div><h4>Labs</h4><p class="dim">Step-by-step missions with copy-ready code, expected outputs, hints and stretch goals. Tick off steps to earn XP.</p></div>
+      <div class="card lift reveal"><div class="icon">☠️</div><h4>Boss battle</h4><p class="dim">An open-ended end-of-day challenge that combines everything. Teams race, and the boss HP bar drops as you hit criteria.</p></div>
+      <div class="card lift reveal"><div class="icon">📡</div><h4>Debrief</h4><p class="dim">A quick quiz, a show-and-tell, and a "what would break in prod?" discussion before the next world.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RANKS & BADGES ================= -->
+<section class="section" style="padding-top:20px">
+  <div class="wrap split rev">
+    <figure class="photo reveal" style="margin:0"><img src="assets/img/astronaut.jpg" alt="Astronaut floating above Earth" loading="lazy"><figcaption>Your rank appears in the top-right HUD. Click it.</figcaption></figure>
+    <div class="reveal">
+      <div class="eyebrow">Gamified, on purpose</div>
+      <h2>From <span class="grad-mint">Cadet</span> to <span class="grad-sun">Admiral</span></h2>
+      <p>Every lab step you check off, every boss criterion you hit and every quiz question you get right earns XP. Progress is saved in your browser, so you can close the tab and come back.</p>
+      <div class="table-wrap"><table>
+        <tr><th>Rank</th><th>XP</th><th>Typically reached</th></tr>
+        <tr><td>🧑‍🚀 Cadet</td><td>0</td><td>Launch Prep</td></tr>
+        <tr><td>🧭 Navigator</td><td>400</td><td>Mid Day 1</td></tr>
+        <tr><td>🛩️ Pilot</td><td>1,000</td><td>End of Day 1</td></tr>
+        <tr><td>🔧 Flight Engineer</td><td>1,800</td><td>End of Day 2</td></tr>
+        <tr><td>🚀 Commander</td><td>2,800</td><td>End of Day 3</td></tr>
+        <tr><td>🌌 Captain</td><td>3,800</td><td>End of Day 4</td></tr>
+        <tr><td>👑 Admiral of the Fleet</td><td>5,000</td><td>Capstone launched</td></tr>
+      </table></div>
+    </div>
+  </div>
+</section>
+
+<section class="section-tight">
+  <div class="wrap">
+    <div class="reveal"><div class="eyebrow">Mission patches</div><h3>Badges you can earn</h3><p class="dim">These light up as you complete labs and beat bosses across the site.</p></div>
+    <div class="badges reveal" style="margin-top:22px">
+      <div class="badge" data-req="lab:0.1"><div class="medal">🛠️</div><b>Ignition</b><span>Launch Prep done</span></div>
+      <div class="badge" data-req="boss:d1"><div class="medal">🐙</div><b>Kraken Slayer</b><span>Day 1 boss</span></div>
+      <div class="badge" data-req="boss:d2"><div class="medal">🌊</div><b>Drift Tamer</b><span>Day 2 boss</span></div>
+      <div class="badge" data-req="boss:d3"><div class="medal">🐉</div><b>Hydra Hunter</b><span>Day 3 boss</span></div>
+      <div class="badge" data-req="boss:d4"><div class="medal">🐝</div><b>Swarm Master</b><span>Day 4 boss</span></div>
+      <div class="badge" data-req="boss:d5"><div class="medal">🔴</div><b>Red Planet</b><span>Day 5 boss</span></div>
+      <div class="badge" data-req="boss:capstone"><div class="medal">🏁</div><b>Launched</b><span>Capstone shipped</span></div>
+      <div class="badge" data-req="xp>=5000"><div class="medal">👑</div><b>Admiral</b><span>5,000 XP</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= WHAT YOU'LL BUILD ================= -->
+<section class="section" id="build">
+  <div class="wrap">
+    <div class="center reveal">
+      <div class="eyebrow">Your portfolio by Friday</div>
+      <h2>Things you will <span class="grad-text">actually ship</span></h2>
+    </div>
+    <div class="grid g3" style="margin-top:44px">
+      <div class="card img-card lift reveal"><div class="img" style="background-image:url('assets/img/earth-lights-us.jpg')"></div><div class="body"><span class="tag green">Day 1</span><h4>Explainable churn &amp; demand forecaster</h4><p class="dim">Boosted trees plus TimesFM in pure SQL, with per-prediction explanations.</p></div></div>
+      <div class="card img-card lift reveal"><div class="img" style="background-image:url('assets/img/servers.jpg')"></div><div class="body"><span class="tag">Day 2</span><h4>Self-healing ML pipeline</h4><p class="dim">A KFP pipeline that trains, evaluates, gates and deploys a canary, and retrains on drift.</p></div></div>
+      <div class="card img-card lift reveal"><div class="img" style="background-image:url('assets/img/nebula-bubble.jpg')"></div><div class="body"><span class="tag amber">Day 3</span><h4>Multimodal mission-briefing engine</h4><p class="dim">PDFs, video and photos go in. Grounded, cited, structured JSON comes out, plus a generated poster.</p></div></div>
+      <div class="card img-card lift reveal"><div class="img" style="background-image:url('assets/img/robot-reading.jpg')"></div><div class="body"><span class="tag violet">Day 4</span><h4>Multi-agent concierge over A2A</h4><p class="dim">ADK agents with RAG, MCP tools and long-term memory, deployed to Agent Runtime.</p></div></div>
+      <div class="card img-card lift reveal"><div class="img" style="background-image:url('assets/img/circuit.jpg')"></div><div class="body"><span class="tag magenta">Day 5</span><h4>Tuned, evaluated, armored model</h4><p class="dim">A fine-tuned Gemini and a self-hosted Gemma 4, behind Model Armor, with an eval scorecard.</p></div></div>
+      <div class="card img-card lift reveal"><div class="img" style="background-image:url('assets/img/rocket-launch.jpg')"></div><div class="body"><span class="tag amber">Capstone</span><h4>Your own launch</h4><p class="dim">A team-built AI product, demoed live to the class with metrics and a cost model.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= STACK ================= -->
+<section class="section-tight">
+  <div class="wrap center">
+    <div class="eyebrow reveal">The instrument panel</div>
+    <h3 class="reveal">Services &amp; tools you'll fly</h3>
+    <div class="stack reveal" style="margin-top:24px">
+      <span>BigQuery ML</span><span>BigQuery DataFrames</span><span>TimesFM · AI.FORECAST</span><span>Colab Enterprise</span><span>Agent Platform Training</span><span>Hyperparameter Tuning</span><span>Pipelines (KFP v2)</span><span>Experiments</span><span>Model Registry</span><span>Online Endpoints</span><span>Feature Store</span><span>Model Monitoring</span><span>Cloud Build</span><span>Artifact Registry</span><span>Gemini 4 Argon</span><span>Gemini 3.8 Flash</span><span>Gemini 3.5 Flash-Lite</span><span>Nano Banana</span><span>Omni / Veo 3.1</span><span>Gemini Embedding</span><span>Context Caching</span><span>Grounding with Google Search</span><span>AI.GENERATE</span><span>Vector Search</span><span>RAG Engine</span><span>ADK 2.0</span><span>Agent Runtime</span><span>Memory Bank</span><span>A2A Protocol</span><span>MCP Toolbox</span><span>Supervised Tuning</span><span>Model Garden</span><span>Gemma 4</span><span>Cloud Run GPUs</span><span>vLLM</span><span>Gen AI Evaluation</span><span>Model Armor</span><span>Cloud Trace</span><span>Budgets &amp; Alerts</span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= AUDIENCE ================= -->
+<section class="section">
+  <div class="wrap">
+    <div class="grid g2">
+      <div class="card reveal">
+        <div class="eyebrow">Who should board</div>
+        <h3>This course is for you if…</h3>
+        <ul class="dim">
+          <li>You write Python comfortably and can read SQL.</li>
+          <li>You know the basics of ML: train/test split, overfitting, precision vs. recall.</li>
+          <li>You've used <em>some</em> cloud (any provider) and aren't scared of a terminal.</li>
+          <li>You want to go from "I called an LLM API once" to "I run AI systems in production."</li>
+        </ul>
+      </div>
+      <div class="card reveal">
+        <div class="eyebrow">Pre-flight checklist</div>
+        <h3>Bring these</h3>
+        <ul class="dim">
+          <li>A Google Cloud project with billing enabled (budget ≈ <strong>$40–80 per learner</strong> for the week if you clean up daily).</li>
+          <li>Owner or Editor on that project, or the IAM roles listed in <a href="setup.html">Launch Prep</a>.</li>
+          <li>Chrome, plus either Cloud Shell or a local Python 3.12+ environment.</li>
+          <li>Curiosity, snacks and a team name. Teams of 2–3 for boss battles.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CTA ================= -->
+<section class="banner" style="min-height:460px">
+  <div class="bg" style="background-image:url('assets/img/rocket-pad.jpg')"></div>
+  <div class="wrap">
+    <div class="eyebrow">T-minus 10…</div>
+    <h2 style="max-width:700px">Your rocket is on the pad. <span class="grad-sun">Fuel it up.</span></h2>
+    <p class="lead" style="color:#d5dbff">Start with Launch Prep: a 45-minute lab that sets up your project, budget guardrails, SDKs and your first Gemini call. It earns your first badge.</p>
+    <div class="btn-row"><a class="btn btn-primary" href="setup.html">🚀 Launch Prep</a><a class="btn btn-ghost" href="day1.html">Jump to Day 1</a></div>
+  </div>
+</section>
+
+<script src="assets/js/main.js?v=2"></script>
+</body>
+</html>

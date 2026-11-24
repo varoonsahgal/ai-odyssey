@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Capstone · Launch Day | AI Odyssey</title>
+<meta name="description" content="The AI Odyssey capstone: five project tracks combining classical ML, Gemini, RAG, ADK agents, A2A and MCP on Google Cloud, with deliverables, a rubric, team roles, a reference architecture and Demo Day awards.">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css?v=2">
+<style>
+  .track .body ul { padding-left: 1.2em; margin: 6px 0 12px; font-size: .92rem; color: var(--text-dim); }
+  .track .body li { margin-bottom: 4px; }
+  .track .body h5 { font-family: var(--font-mono); font-size: .7rem; letter-spacing: .16em; text-transform: uppercase; color: var(--amber); margin: 14px 0 4px; }
+  .track .arch { font-family: var(--font-mono); font-size: .78rem; color: #b7ffe6; background: rgba(4,20,18,.6); border: 1px solid rgba(46,230,166,.3); border-radius: 10px; padding: 10px 12px; line-height: 1.6; }
+  .award .icon { background: var(--grad-sun); border: 0; }
+  .countdown { font-family: var(--font-mono); font-size: clamp(1.8rem, 5vw, 3.4rem); letter-spacing: .12em; color: #fff; text-shadow: 0 0 30px rgba(247,37,133,.6); }
+</style>
+</head>
+<body data-page="capstone">
+
+<!-- ================= HERO ================= -->
+<header class="hero">
+  <div class="hero-bg" style="background-image:url('assets/img/rocket-launch.jpg')"></div>
+  <canvas class="starfield"></canvas>
+  <div class="wrap">
+    <div class="eyebrow" style="color:var(--amber)">Final mission · Day 5 afternoon</div>
+    <h1>Launch <span class="grad-sun">Day</span></h1>
+    <p class="lead">Five worlds of skills, one rocket. Your crew picks a track, combines classical ML with generative AI and agents, proves it works with evals, survives a red team, knows what it costs, and launches it live in front of the fleet.</p>
+    <div class="hero-badges">
+      <span class="pill">🛠️ <b>~2h15</b> build sprint</span>
+      <span class="pill">🎤 <b>3 min</b> pitch + <b>2 min</b> live demo</span>
+      <span class="pill">👥 Crews of <b>2–4</b></span>
+      <span class="pill">🏆 <b>+500 XP</b> &amp; awards</span>
+    </div>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="#tracks">🚀 Choose your track</a>
+      <a class="btn btn-ghost" href="#deliverables">See the deliverables →</a>
+    </div>
+  </div>
+  <div class="scroll-cue">T-MINUS<br>▾</div>
+</header>
+
+<!-- ================= MISSION STATEMENT ================= -->
+<section class="section">
+  <div class="wrap split">
+    <div class="reveal">
+      <div class="eyebrow">Mission statement</div>
+      <h2>Build something <span class="grad-text">you'd defend in production</span></h2>
+      <p>The capstone isn't a hackathon toy. It's a miniature production system that uses <strong>at least one classical ML component</strong> (Days 1–2), <strong>at least one generative or agentic component</strong> (Days 3–4), and the <strong>engineering discipline</strong> of Day 5: evaluation, safety and cost.</p>
+      <p>You'll reuse what you already built. The churn model, the pipeline, the briefing engine and the concierge agent are all fair game, so the sprint goes to <em>integration and proof</em> instead of starting from scratch.</p>
+      <ul class="dim">
+        <li><strong>Small and real</strong> beats big and imaginary. One working path end-to-end wins.</li>
+        <li><strong>Show your numbers.</strong> Eval scores, attack success rates and cost per request.</li>
+        <li><strong>Tell a story.</strong> Who's the user, what hurts, and what changes on Monday?</li>
+      </ul>
+    </div>
+    <figure class="photo reveal" style="margin:0"><img src="assets/img/rocket-pad.jpg" alt="Rocket lifting off from a launch pad in clouds of exhaust" loading="lazy"><figcaption>Every rocket started as a prototype on a pad.</figcaption></figure>
+  </div>
+  <div class="wrap">
+    <div class="transmission reveal">
+      <p>All crews, this is Mission Control. You've crossed five worlds this week, and every artifact you built is cargo you can load onto this rocket. The fleet board will be in the room at 16:00. They have read none of your code and all of your hype. Show them a system that works, numbers that prove it, and a plan for when it breaks. Launch window opens at 13:45. Good luck. Mission Control out.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= VOYAGE SO FAR ================= -->
+<section class="section-tight" style="padding-top:0">
+  <div class="wrap">
+    <div class="reveal"><div class="eyebrow">Your voyage so far</div><h3>Cargo manifest: what you can reuse</h3>
+    <p class="dim">Don't start from scratch. Each of these is already running in your project, so pick the pieces your track needs.</p></div>
+    <div class="recap reveal">
+      <a href="day1.html#lab-1-2"><small>DAY 1 · TERRA</small>🐙 Churn model with per-customer Shapley reasons, plus TimesFM forecasts and k-means segments.</a>
+      <a href="day2.html#lab-2-2"><small>DAY 2 · LUNA</small>🌊 Gated KFP pipeline, canary endpoint, Feature Store view, drift monitor and CI/CD trigger.</a>
+      <a href="day3.html#lab-3-2"><small>DAY 3 · JUPITER</small>🐉 Schema-valid extraction, grounded answers with citations, Nano Banana visuals and <code>AI.GENERATE</code> in SQL.</a>
+      <a href="day4.html#lab-4-4"><small>DAY 4 · SATURN</small>🐝 RAG corpus, ADK crew, MCP tools, and a deployed agent with Memory Bank and A2A.</a>
+      <a href="day5.html#lab-5-3"><small>DAY 5 · MARS</small>🔴 Tuned model, self-hosted Gemma 4, eval suite, Model Armor shield and cost calculator.</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TRACKS ================= -->
+<section class="section" id="tracks" style="padding-top:20px">
+  <div class="orb" style="width:520px;height:520px;background:#f72585;top:0;left:-12%"></div>
+  <div class="wrap">
+    <div class="center reveal">
+      <div class="eyebrow">Choose your track</div>
+      <h2>Five missions. <span class="grad-sun">Pick one.</span></h2>
+      <p class="lead">Each track lists the minimum viable launch, stretch goals for ambitious crews, and a suggested architecture. Custom proposals are welcome if Mission Control approves them by 13:30.</p>
+    </div>
+
+    <div class="grid g3" style="margin-top:46px">
+      <!-- Track 1 -->
+      <div class="card img-card lift track reveal">
+        <div class="img" style="background-image:url('assets/img/analytics.jpg')"></div>
+        <div class="body">
+          <span class="tag green">Track 1</span><span class="tag amber">Classical + GenAI</span>
+          <h3>Retention Command Center</h3>
+          <p class="dim">Predict who will churn, explain why, and act on it automatically with personalized win-back messages approved by a human.</p>
+          <h5>Required</h5>
+          <ul><li>Day 1 churn model + <code>ML.EXPLAIN_PREDICT</code> reasons</li><li>Gemini drafts personalized emails from the top-3 reasons</li><li>Agent tool: "why is customer X at risk?"</li><li>Human approval step before anything is "sent"</li></ul>
+          <h5>Stretch</h5>
+          <ul><li>Batch-generate emails for all at-risk users with a batch job</li><li>Pairwise eval: generic vs personalized email</li></ul>
+          <details class="deep"><summary>Suggested architecture</summary><div><div class="arch">BigQuery (churn_explained)<br>→ ADK agent (Flash) + BigQuery tool<br>→ Gemini email draft (structured JSON)<br>→ Model Armor (output) → human approve UI</div></div></details>
+        </div>
+      </div>
+      <!-- Track 2 -->
+      <div class="card img-card lift track reveal">
+        <div class="img" style="background-image:url('assets/img/earth-night.jpg')"></div>
+        <div class="body">
+          <span class="tag amber">Track 2</span><span class="tag magenta">Multimodal</span>
+          <h3>Multimodal Field Inspector</h3>
+          <p class="dim">Technicians upload photos, short videos and PDF manuals. The system finds defects, cites the manual and files a structured inspection report.</p>
+          <h5>Required</h5>
+          <ul><li>Image/video understanding with Gemini and a structured output schema</li><li>RAG over equipment manuals with citations</li><li>Severity classifier: Gemini vs a cheap baseline, compared</li><li>Report written to BigQuery</li></ul>
+          <h5>Stretch</h5>
+          <ul><li>Nano Banana annotates the defect on the photo</li><li>Live API voice mode for hands-free inspection</li></ul>
+          <details class="deep"><summary>Suggested architecture</summary><div><div class="arch">GCS uploads → Gemini 3.8 Flash (multimodal)<br>→ RAG Engine (manuals) → JSON report<br>→ BigQuery → Looker Studio dashboard</div></div></details>
+        </div>
+      </div>
+      <!-- Track 3 -->
+      <div class="card img-card lift track reveal">
+        <div class="img" style="background-image:url('assets/img/network-cubes.jpg')"></div>
+        <div class="body">
+          <span class="tag violet">Track 3</span><span class="tag">MCP</span>
+          <h3>Data Analyst Agent over BigQuery</h3>
+          <p class="dim">A natural-language analyst that writes and runs SQL through MCP tools, trains BQML models on request, and explains results with charts.</p>
+          <h5>Required</h5>
+          <ul><li>ADK agent using MCP Toolbox for Databases (BigQuery tools)</li><li>Read-only service identity; dry-run cost check before every query</li><li>Can train and evaluate a BQML model on request</li><li>Trajectory eval on 10 analyst questions</li></ul>
+          <h5>Stretch</h5>
+          <ul><li>Calls <code>AI.FORECAST</code> for "what happens next month?" questions</li><li>Refuses queries over a bytes-billed budget</li></ul>
+          <details class="deep"><summary>Suggested architecture</summary><div><div class="arch">User → ADK agent (Flash, thinking=medium)<br>→ MCP Toolbox → BigQuery (read-only SA)<br>→ BQML / AI.FORECAST → chart + narrative</div></div></details>
+        </div>
+      </div>
+      <!-- Track 4 -->
+      <div class="card img-card lift track reveal">
+        <div class="img" style="background-image:url('assets/img/robot-cute.jpg')"></div>
+        <div class="body">
+          <span class="tag violet">Track 4</span><span class="tag green">A2A</span>
+          <h3>Support Swarm with A2A</h3>
+          <p class="dim">A front-desk concierge that delegates to specialist agents (orders, returns, product expert) built by <em>different crews</em> and connected over A2A.</p>
+          <h5>Required</h5>
+          <ul><li>3+ agents, at least one built by another crew, discovered via Agent Cards</li><li>Memory Bank for returning customers</li><li>Model Armor on the front door; human approval for refunds</li><li>Brand voice from the Lab 5.1 tuned model (or a strong prompt)</li></ul>
+          <h5>Stretch</h5>
+          <ul><li>Synthetic-user simulation for multi-turn eval</li><li>Cascade routing to cut cost</li></ul>
+          <details class="deep"><summary>Suggested architecture</summary><div><div class="arch">Concierge (Agent Runtime)<br>⇄ A2A ⇄ Orders agent · Returns agent · Product RAG agent<br>+ Memory Bank + Model Armor + Cloud Trace</div></div></details>
+        </div>
+      </div>
+      <!-- Track 5 -->
+      <div class="card img-card lift track reveal">
+        <div class="img" style="background-image:url('assets/img/galaxy-core.jpg')"></div>
+        <div class="body">
+          <span class="tag">Track 5</span><span class="tag amber">Forecast → Action</span>
+          <h3>Forecast-to-Action Planner</h3>
+          <p class="dim">TimesFM forecasts demand, anomaly detection flags surprises, and a planning agent turns them into purchase orders and a weekly briefing.</p>
+          <h5>Required</h5>
+          <ul><li><code>AI.FORECAST</code> + ARIMA_PLUS backtest choosing the model per category</li><li><code>ML.DETECT_ANOMALIES</code> feeding alerts</li><li>Agent drafts reorder recommendations with reasoning</li><li>Pipeline or scheduled query that refreshes daily</li></ul>
+          <h5>Stretch</h5>
+          <ul><li>Grounding with Google Search for external events (holidays, weather)</li><li>Frontier model only for "what-if" scenario planning</li></ul>
+          <details class="deep"><summary>Suggested architecture</summary><div><div class="arch">Scheduled query → daily_sales<br>→ AI.FORECAST + DETECT_ANOMALIES<br>→ Planner agent (Argon for what-ifs, Flash otherwise)<br>→ briefing email + reorder table</div></div></details>
+        </div>
+      </div>
+      <!-- Custom -->
+      <div class="card img-card lift track reveal">
+        <div class="img" style="background-image:url('assets/img/blueprint.jpg')"></div>
+        <div class="body">
+          <span class="tag magenta">Track ∞</span><span class="tag">Your idea</span>
+          <h3>Bring Your Own Mission</h3>
+          <p class="dim">Have a real problem from work? Bring it, using public or synthetic data only. Same rules: one classical component, one generative/agentic component, full Day 5 discipline.</p>
+          <h5>Required</h5>
+          <ul><li>One-paragraph proposal approved by Mission Control by 13:30</li><li>No confidential or personal data. Synthesize it with Gemini if needed.</li><li>All six deliverables below</li></ul>
+          <h5>Hall of fame ideas</h5>
+          <ul><li>Contract clause risk scorer + negotiation agent</li><li>Lecture-video study buddy with quizzes</li><li>IT ticket triage with a tuned Flash-Lite classifier</li></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= REFERENCE ARCHITECTURE ================= -->
+<section class="section">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="eyebrow">Reference architecture</div>
+      <h2>The shape of a <span class="grad-text">winning capstone</span></h2>
+      <p class="lead">Almost every strong capstone fits this pattern. Data and classical models at the bottom, Gemini and agents in the middle, and a guard layer wrapped around everything, with eval and cost telemetry feeding back.</p>
+    </div>
+    <figure class="diagram reveal">
+      <svg viewBox="0 0 1000 470" role="img" aria-label="Reference architecture: users pass through Model Armor to an ADK agent on Agent Runtime, which uses Gemini models, tools via MCP and A2A, RAG and BigQuery ML, with evaluation, tracing and budgets feeding back">
+        <defs>
+          <linearGradient id="capg1" x1="0" x2="1"><stop offset="0" stop-color="#4cc9f0"/><stop offset="1" stop-color="#8b6cff"/></linearGradient>
+          <linearGradient id="capg2" x1="0" x2="1"><stop offset="0" stop-color="#ffb703"/><stop offset="1" stop-color="#ff4d6d"/></linearGradient>
+          <marker id="capa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10z" fill="#4cc9f0"/></marker>
+          <filter id="capglow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <!-- guard ring -->
+        <rect x="150" y="20" width="700" height="350" rx="26" fill="none" stroke="#2ee6a6" stroke-width="2" stroke-dasharray="8 6"/>
+        <text x="500" y="44" text-anchor="middle" fill="#2ee6a6" font-size="13" font-weight="700" font-family="JetBrains Mono, monospace">GUARD LAYER · Model Armor · Agent Identity · Agent Gateway · human approval</text>
+        <!-- user -->
+        <rect x="20" y="160" width="100" height="70" rx="14" fill="#0c1230" stroke="#7680ad"/>
+        <text x="70" y="192" text-anchor="middle" fill="#fff" font-weight="700" font-size="14">Users</text>
+        <text x="70" y="212" text-anchor="middle" fill="#aab2d9" font-size="11">web · chat · voice</text>
+        <!-- agent -->
+        <rect x="200" y="140" width="220" height="110" rx="18" fill="#141b44" stroke="url(#capg1)" stroke-width="2.5" filter="url(#capglow)"/>
+        <text x="310" y="174" text-anchor="middle" fill="#fff" font-weight="700" font-size="15">ADK 2.0 agent</text>
+        <text x="310" y="196" text-anchor="middle" fill="#aab2d9" font-size="12">on Agent Runtime</text>
+        <text x="310" y="216" text-anchor="middle" fill="#aab2d9" font-size="12">Sessions · Memory Bank</text>
+        <text x="310" y="236" text-anchor="middle" fill="#7680ad" font-size="11" font-family="JetBrains Mono, monospace">cascade router</text>
+        <!-- models -->
+        <rect x="470" y="70" width="170" height="110" rx="14" fill="#0c1230" stroke="#ffb703"/>
+        <text x="555" y="96" text-anchor="middle" fill="#ffb703" font-weight="700" font-size="13">Gemini models</text>
+        <text x="555" y="118" text-anchor="middle" fill="#aab2d9" font-size="11.5">3.5 Flash-Lite · easy</text>
+        <text x="555" y="138" text-anchor="middle" fill="#aab2d9" font-size="11.5">3.8 Flash · default</text>
+        <text x="555" y="158" text-anchor="middle" fill="#aab2d9" font-size="11.5">4 Argon · hard / what-if</text>
+        <!-- tools -->
+        <rect x="470" y="210" width="170" height="130" rx="14" fill="#0c1230" stroke="#8b6cff"/>
+        <text x="555" y="236" text-anchor="middle" fill="#b9a8ff" font-weight="700" font-size="13">Tools</text>
+        <text x="555" y="258" text-anchor="middle" fill="#aab2d9" font-size="11.5">MCP Toolbox (BigQuery)</text>
+        <text x="555" y="278" text-anchor="middle" fill="#aab2d9" font-size="11.5">A2A specialist agents</text>
+        <text x="555" y="298" text-anchor="middle" fill="#aab2d9" font-size="11.5">RAG Engine / Vector Search</text>
+        <text x="555" y="318" text-anchor="middle" fill="#aab2d9" font-size="11.5">Google Search grounding</text>
+        <!-- data -->
+        <rect x="690" y="110" width="140" height="190" rx="16" fill="rgba(46,230,166,.07)" stroke="#2ee6a6"/>
+        <text x="760" y="138" text-anchor="middle" fill="#2ee6a6" font-weight="700" font-size="13">BigQuery</text>
+        <text x="760" y="162" text-anchor="middle" fill="#aab2d9" font-size="11.5">BQML churn model</text>
+        <text x="760" y="182" text-anchor="middle" fill="#aab2d9" font-size="11.5">AI.FORECAST</text>
+        <text x="760" y="202" text-anchor="middle" fill="#aab2d9" font-size="11.5">AI.GENERATE</text>
+        <text x="760" y="222" text-anchor="middle" fill="#aab2d9" font-size="11.5">feature tables</text>
+        <text x="760" y="252" text-anchor="middle" fill="#7680ad" font-size="11" font-family="JetBrains Mono, monospace">refreshed by</text>
+        <text x="760" y="270" text-anchor="middle" fill="#7680ad" font-size="11" font-family="JetBrains Mono, monospace">KFP pipeline</text>
+        <!-- arrows -->
+        <g stroke="#4cc9f0" stroke-width="2" fill="none" marker-end="url(#capa)">
+          <path d="M120 195 H 198"/><path d="M420 170 C 445 150, 450 130, 468 125"/><path d="M420 220 C 445 240, 450 260, 468 270"/><path d="M640 275 C 665 270, 670 240, 688 230"/>
+        </g>
+        <!-- feedback band -->
+        <rect x="150" y="395" width="700" height="58" rx="14" fill="rgba(255,77,109,.08)" stroke="url(#capg2)" stroke-width="1.5"/>
+        <text x="500" y="420" text-anchor="middle" fill="#ff7a90" font-weight="700" font-size="13">FEEDBACK LOOP</text>
+        <text x="500" y="440" text-anchor="middle" fill="#aab2d9" font-size="12">Gen AI eval (rubrics · pairwise · trajectory) · Cloud Trace · Model Monitoring · budgets &amp; alerts</text>
+        <path d="M500 395 V 372" stroke="#ff4d6d" stroke-width="2" stroke-dasharray="4 4" marker-end="url(#capa)"/>
+      </svg>
+      <figcaption>Fig C.1 · Capstone reference architecture. Swap pieces in or out per track, but keep the guard layer and the feedback loop.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ================= CREW ROLES ================= -->
+<section class="section" style="padding-top:20px">
+  <div class="wrap">
+    <div class="center reveal">
+      <div class="eyebrow">Crew formation</div>
+      <h2>Every rocket needs a <span class="grad-mint">crew</span></h2>
+      <p class="lead">Crews of 2–4. In smaller crews, people double up on roles, but every role must have a named owner on the deliverables sheet.</p>
+    </div>
+    <div class="grid g4" style="margin-top:40px">
+      <div class="card lift reveal"><div class="icon">🧑‍✈️</div><h4>Pilot</h4><p class="dim">Owns the product story and the pitch. Keeps scope ruthlessly small. Decides what gets cut at 15:15.</p></div>
+      <div class="card lift reveal"><div class="icon">🧭</div><h4>Navigator</h4><p class="dim">Owns data and classical ML: features, BQML or forecasts, and the eval dataset with reference answers.</p></div>
+      <div class="card lift reveal"><div class="icon">🔧</div><h4>Engineer</h4><p class="dim">Owns the agent, tools, deployment and integration. Makes the live demo path bulletproof.</p></div>
+      <div class="card lift reveal"><div class="icon">🛡️</div><h4>Red-teamer</h4><p class="dim">Owns safety and cost: Model Armor, the attack table, the cost model. Attacks their own crew's system first.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TIMELINE ================= -->
+<section class="section">
+  <div class="wrap split">
+    <div class="reveal">
+      <div class="eyebrow">Launch sequence</div>
+      <h2>Countdown <span class="grad-sun">timeline</span></h2>
+      <div class="timeline" style="margin-top:24px">
+        <div class="tl-item"><div class="tl-time">DAY 3 · EVENING (optional)</div><div class="tl-title">Pre-launch: form crews and pick a track</div><p>Sketch the user story and which of your existing labs you'll reuse. 20 minutes, max.</p></div>
+        <div class="tl-item"><div class="tl-time">DAY 4 · EVENING (optional)</div><div class="tl-title">Pre-launch: data &amp; eval set</div><p>Gather or synthesize the data and write 10–20 eval questions with reference answers.</p></div>
+        <div class="tl-item t-lab"><div class="tl-time">DAY 5 · 13:45 – 14:45</div><div class="tl-title">Build sprint 1: the happy path</div><p>One request, end to end, working. Nothing else matters until this works.</p></div>
+        <div class="tl-item t-boss"><div class="tl-time">14:45 – 15:05</div><div class="tl-title">☠ Red-team exchange (Day 5 boss)</div><p>Rival crew attacks your system for 20 minutes, then you swap.</p></div>
+        <div class="tl-item t-lab"><div class="tl-time">15:05 – 15:45</div><div class="tl-title">Build sprint 2: harden, evaluate, cost</div><p>Fix what the red team found. Run the eval. Fill in the cost model.</p></div>
+        <div class="tl-item t-break"><div class="tl-time">15:45 – 16:00</div><div class="tl-title">Code freeze &amp; pitch rehearsal</div><p>Freeze at 15:45. Rehearse once with a timer.</p></div>
+        <div class="tl-item t-boss"><div class="tl-time">16:00 – 17:00</div><div class="tl-title">🏁 Demo Day &amp; awards</div></div>
+      </div>
+    </div>
+    <figure class="photo reveal" style="margin:0"><img src="assets/img/astronaut.jpg" alt="Astronaut floating above Earth" loading="lazy" style="aspect-ratio:3/4"><figcaption>Scope is the oxygen supply. Ration it.</figcaption></figure>
+  </div>
+</section>
+
+<!-- ================= DELIVERABLES (BOSS) ================= -->
+<section class="section" id="deliverables" style="padding-top:20px">
+  <div class="wrap">
+    <div class="boss reveal" data-boss="capstone" data-xp="500">
+      <div class="bg" style="background-image:url('assets/img/rocket-arc.jpg')"></div>
+      <div class="boss-inner">
+        <div class="boss-label">FINAL BOSS · CAPSTONE</div>
+        <h3>🏁 The Launch</h3>
+        <p>Six deliverables stand between your crew and orbit. Check each one off as you complete it. The HP bar is your launch countdown, and all six together earn <strong>+500 XP</strong> and the <strong>Launched</strong> badge.</p>
+        <div class="hp"><span></span></div>
+        <h4>Launch criteria</h4>
+        <ul class="criteria">
+          <li><strong>Architecture diagram</strong>: one slide showing data, classical model(s), Gemini/agents, tools, guard layer and feedback loop (start from Fig C.1).</li>
+          <li><strong>Working demo</strong>: a live (or recorded backup) end-to-end path on real Google Cloud resources, with no mocked model calls.</li>
+          <li><strong>Eval scorecard</strong>: at least 10 test cases scored with at least one autorater or rubric metric, plus one deterministic metric, compared against a baseline.</li>
+          <li><strong>Cost model</strong>: cost per request (or per 1,000 users) with the model mix you chose, and one optimization you applied (cascade, caching or batch).</li>
+          <li><strong>Red-team report</strong>: the before/after attack table from your Day 5 boss battle, with residual risks you accept and why.</li>
+          <li><strong>3-minute pitch</strong>: problem → demo → numbers → what breaks next. Practiced at least once with a timer.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="grid g2 reveal" style="margin-top:10px;align-items:start">
+      <figure class="shot" style="margin:0"><div class="shot-bar"><i></i><i></i><i></i><span>Crew Orion · eval scorecard</span><span class="live">EXAMPLE</span></div>
+        <div class="grid-out"><table>
+          <tr><th>metric (n=20)</th><th>baseline</th><th>ours</th></tr>
+          <tr><td>groundedness (autorater)</td><td>0.71</td><td style="color:#2ee6a6">0.93</td></tr>
+          <tr><td>brand_voice rubric (1–5)</td><td>2.6</td><td style="color:#2ee6a6">4.2</td></tr>
+          <tr><td>tool trajectory recall</td><td>0.80</td><td style="color:#2ee6a6">1.00</td></tr>
+          <tr><td>schema-valid JSON</td><td>17/20</td><td style="color:#2ee6a6">20/20</td></tr>
+          <tr><td>attacks blocked</td><td>3/8</td><td style="color:#2ee6a6">8/8 · 0 false +</td></tr>
+        </table></div><figcaption><b>Example format.</b> Baseline = un-tuned, unshielded Day 4 agent. Always show the comparison.</figcaption></figure>
+      <figure class="shot" style="margin:0"><div class="shot-bar"><i></i><i></i><i></i><span>Crew Orion · cost model</span><span class="live">EXAMPLE · MADE-UP PRICES</span></div>
+        <div class="term"><span class="w">Assumptions</span>   50k conversations/mo · 4 turns · 2.5k in / 250 out tokens
+<span class="w">Model mix</span>     Flash-Lite 75% · Flash 22% · Argon 3%
+<span class="w">Optimizations</span> context cache on policy docs (68% hit) · nightly batch for emails
+
+<span class="c">                    before      after</span>
+cost / conversation  <span class="m">$0.041</span>   →  <span class="p">$0.007</span>
+monthly              <span class="m">$2,050</span>   →  <span class="p">$350</span>
+<span class="y">▲ biggest lever: cascade routing (≈4×), then caching (≈1.5×)</span></div>
+        <figcaption><b>Example:</b> plug in real prices from the pricing page for your own.</figcaption></figure>
+    </div>
+    <div class="grid g2 reveal" style="margin-top:6px">
+      <div class="sidequest" data-sq="cap.pitch-60" data-xp="50"><div class="sq-ico">🎤</div><div><span class="sq-tag">SIDE QUEST</span><b>Pitch in 60 Seconds</b><p>Before the real pitch, deliver the whole story (problem, demo moment, one number, the risk) to another crew in 60 seconds flat. If they can repeat your value proposition back, claim it.</p></div><button type="button"></button></div>
+      <div class="sidequest" data-sq="cap.chaos-monkey" data-xp="60"><div class="sq-ico">🐒</div><div><span class="sq-tag">SIDE QUEST · LIVE</span><b>Chaos Monkey</b><p>During your demo, deliberately break something: kill a tool, feed a poisoned document, or exhaust a quota. Then show the system degrading gracefully. Fleet boards love a crew that rehearsed failure.</p></div><button type="button"></button></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RUBRIC ================= -->
+<section class="section" id="rubric" style="padding-top:20px">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="eyebrow">Judging rubric</div>
+      <h2>How the fleet board <span class="grad-text">scores you</span></h2>
+      <p class="lead">Scored 1–5 per criterion by judges and peers (peer votes count 30%). Weights add to 100.</p>
+    </div>
+    <div class="table-wrap reveal" style="margin-top:26px"><table>
+      <tr><th>Criterion</th><th>Weight</th><th>A "5" looks like…</th></tr>
+      <tr><td>🌍 Impact &amp; story</td><td>15</td><td>A specific user, a painful problem, and a believable "what changes Monday".</td></tr>
+      <tr><td>⚙️ Technical depth</td><td>20</td><td>Non-trivial integration: tools, retrieval, agents or pipelines working together, not one prompt in a box.</td></tr>
+      <tr><td>🧬 Classical + generative</td><td>15</td><td>Each paradigm used where it's strongest, with a sentence on <em>why</em> for each choice.</td></tr>
+      <tr><td>📏 Evaluation rigor</td><td>15</td><td>Baseline comparison, rubric with anchored scores, honest failure examples shown.</td></tr>
+      <tr><td>🛡️ Safety &amp; security</td><td>15</td><td>Model Armor + least privilege + human approval; red-team table with real numbers.</td></tr>
+      <tr><td>💸 Cost awareness</td><td>10</td><td>Cost per request known; at least one optimization measured, not just claimed.</td></tr>
+      <tr><td>🎤 Demo &amp; delivery</td><td>10</td><td>Live demo works, crew stays on time, and answers "what breaks next?" crisply.</td></tr>
+    </table></div>
+  </div>
+</section>
+
+<!-- ================= DEMO DAY & AWARDS ================= -->
+<section class="banner" style="min-height:340px">
+  <div class="bg" style="background-image:url('assets/img/hero-milkyway.jpg')"></div>
+  <div class="wrap">
+    <div class="eyebrow" style="color:var(--amber)">Demo Day format</div>
+    <div class="countdown">03:00 · 02:00 · 02:00</div>
+    <p class="lead" style="color:#d5dbff;margin-top:12px">3-minute pitch · 2-minute live demo · 2-minute fleet board Q&amp;A. A gong sounds at time. Crews present in reverse order of total XP, so the underdogs set the bar.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="center reveal">
+      <div class="eyebrow">Awards</div>
+      <h2>Glory, trophies &amp; <span class="grad-sun">bragging rights</span></h2>
+    </div>
+    <div class="grid g4" style="margin-top:40px">
+      <div class="card lift award reveal"><div class="icon">🏆</div><h4>Mission Control's Choice</h4><p class="dim">Highest overall rubric score. The crew that would get the production budget.</p></div>
+      <div class="card lift award reveal"><div class="icon">📈</div><h4>Best Use of TimesFM</h4><p class="dim">Most compelling use of forecasting, with a backtest to prove it.</p></div>
+      <div class="card lift award reveal"><div class="icon">🕵️</div><h4>Most Paranoid Red-Teamer</h4><p class="dim">The most creative successful exploit during the Day 5 boss battle, responsibly disclosed.</p></div>
+      <div class="card lift award reveal"><div class="icon">🪙</div><h4>Cheapest Smart Thing</h4><p class="dim">Best quality-per-dollar. Bonus if a BQML model beat an LLM somewhere.</p></div>
+      <div class="card lift award reveal"><div class="icon">🎨</div><h4>Most Jaw-Dropping Demo</h4><p class="dim">Multimodal magic, live voice or generated visuals that made the room gasp.</p></div>
+      <div class="card lift award reveal"><div class="icon">🧪</div><h4>Eval Nerds</h4><p class="dim">Most rigorous evaluation: counterbalanced pairwise, calibrated judges, honest failure cases.</p></div>
+      <div class="card lift award reveal"><div class="icon">🤝</div><h4>Best Diplomats</h4><p class="dim">Best cross-crew A2A integration. Two crews' agents collaborating live.</p></div>
+      <div class="card lift award reveal"><div class="icon">👑</div><h4>Admiral of the Fleet</h4><p class="dim">Every learner who crosses 5,000 XP. Check your HUD in the top-right corner.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= BADGES ================= -->
+<section class="section-tight">
+  <div class="wrap">
+    <div class="reveal"><div class="eyebrow">Your mission patches</div><h3>Badge check before launch</h3><p class="dim">Missing one? There's still time. Bosses can be revisited, and every criterion you check adds XP.</p></div>
+    <div class="badges reveal" style="margin-top:22px">
+      <div class="badge" data-req="lab:0.1"><div class="medal">🛠️</div><b>Ignition</b><span>Launch Prep done</span></div>
+      <div class="badge" data-req="boss:d1"><div class="medal">🐙</div><b>Kraken Slayer</b><span>Day 1 boss</span></div>
+      <div class="badge" data-req="boss:d2"><div class="medal">🌊</div><b>Drift Tamer</b><span>Day 2 boss</span></div>
+      <div class="badge" data-req="boss:d3"><div class="medal">🐉</div><b>Hydra Hunter</b><span>Day 3 boss</span></div>
+      <div class="badge" data-req="boss:d4"><div class="medal">🐝</div><b>Swarm Master</b><span>Day 4 boss</span></div>
+      <div class="badge" data-req="boss:d5"><div class="medal">🔴</div><b>Red Planet</b><span>Day 5 boss</span></div>
+      <div class="badge" data-req="boss:capstone"><div class="medal">🏁</div><b>Launched</b><span>Capstone shipped</span></div>
+      <div class="badge" data-req="xp>=5000"><div class="medal">👑</div><b>Admiral</b><span>5,000 XP</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CLOSING ================= -->
+<section class="banner" style="min-height:480px;margin-bottom:0">
+  <div class="bg" style="background-image:url('assets/img/earth-night.jpg')"></div>
+  <div class="wrap">
+    <div class="eyebrow" style="color:var(--green)">Transmission ends</div>
+    <h2 style="max-width:760px">The odyssey ends. <span class="grad-mint">The mission doesn't.</span> 🚀</h2>
+    <p class="lead" style="color:#d5dbff">Five days ago you trained a penguin classifier. Today you launched a tuned, evaluated, armored, cost-engineered AI system, and you know when to use a boosted tree instead of a frontier model. That judgment is the real graduation. The models will change next quarter, and you now know how to evaluate whatever comes next and decide whether it's worth adopting.</p>
+    <p class="dim" style="max-width:720px">Before you go: tear down your resources (see the cleanup in the <a href="field-guide.html">Field Guide</a>), save your notebooks, and pin the model-versions page. Retirement dates arrive faster than you think.</p>
+    <div class="btn-row" style="margin-top:20px"><a class="btn btn-primary" href="field-guide.html">📘 Open the Field Guide</a><a class="btn btn-ghost" href="index.html">↺ Back to mission home</a></div>
+  </div>
+</section>
+
+<script src="assets/js/main.js?v=2"></script>
+</body>
+</html>
